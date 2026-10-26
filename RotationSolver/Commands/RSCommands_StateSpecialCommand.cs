@@ -371,7 +371,7 @@ namespace RotationSolver.Commands
 		{
 			if (DataCenter.PvPAutomationBlocked && stateType != StateCommandType.Off)
 			{
-				Svc.Chat.PrintError("Rotation Solver Reborn: Autorotation is blocked in PvP while 'Auto PVP Series Grind' is enabled. It is an AI generated plugin and has been breaking RSR installations.");
+				Svc.Chat.PrintError("BunnyRotationReborn: Autorotation is blocked in PvP while 'Auto PVP Series Grind' is enabled. It is an AI generated plugin and has been breaking BRR installations.");
 				stateType = StateCommandType.Off;
 			}
 
@@ -381,6 +381,10 @@ namespace RotationSolver.Commands
 			DataCenter.IsAutoDuty = stateType == StateCommandType.AutoDuty;
 			DataCenter.IsHenched = stateType == StateCommandType.Henched;
 			DataCenter.IsPvPStateEnabled = stateType == StateCommandType.PvP;
+			if (stateType is StateCommandType.Off or StateCommandType.TargetOnly or StateCommandType.PvP)
+			{
+				ActionQueueManager.ResetManualPriority();
+			}
 			DataCenter.TargetingTypeOverride = stateType switch
 			{
 				StateCommandType.PvP => TargetingType.LowHP,

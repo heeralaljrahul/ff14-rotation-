@@ -17,7 +17,7 @@ internal sealed class UpdateNotesWindow : Window
 		| ImGuiWindowFlags.NoScrollWithMouse
 		| ImGuiWindowFlags.NoSavedSettings;
 
-	private const string GitHubUrl = $"https://github.com/{Service.USERNAME}/{Service.REPO}";
+	private const string GitHubUrl = Service.BRAND_GITHUB_URL;
 	private const string ReleasesUrl = $"{GitHubUrl}/releases";
 	private const string ContributorsUrl = $"{GitHubUrl}/graphs/contributors";
 	private const string BannerResource = "RotationSolver.Changelog.banner.jpg";
@@ -26,12 +26,12 @@ internal sealed class UpdateNotesWindow : Window
 
 	private static readonly M3WindowAction[] Links =
 	[
-		new("##changelog_discord", FontAwesomeIcon.Comments, "Join the Discord"),
+		new("##changelog_discord", FontAwesomeIcon.Comments, "Join the original RotationSolverReborn Discord"),
 		new("##changelog_github", FontAwesomeIcon.Code, "View on GitHub"),
-		new("##changelog_kofi", FontAwesomeIcon.MugHot, "Support the developer on Ko-fi"),
+		new("##changelog_kofi", FontAwesomeIcon.MugHot, "Support the original RotationSolverReborn developers on Ko-fi"),
 	];
 
-	private static readonly string[] LinkUrls = ["https://discord.gg/r9V4RHYt6v", GitHubUrl, "https://ko-fi.com/ltscombatreborn"];
+	private static readonly string[] LinkUrls = [Service.UPSTREAM_DISCORD_URL, GitHubUrl, Service.UPSTREAM_KOFI_URL];
 
 	private static readonly M3Tab[] PageTabs =
 	[
@@ -61,7 +61,7 @@ internal sealed class UpdateNotesWindow : Window
 	private M3Style.Scope _theme;
 
 	public UpdateNotesWindow()
-		: base("Rotation Solver Reborn Update Notes###rsrUpdateNotesWindow", BaseFlags)
+		: base("BunnyRotationReborn Update Notes###rsrUpdateNotesWindow", BaseFlags)
 	{
 		SizeConstraints = new WindowSizeConstraints()
 		{
@@ -220,7 +220,7 @@ internal sealed class UpdateNotesWindow : Window
 
 	private void DrawIdentity()
 	{
-		const string title = "Rotation Solver Reborn";
+		const string title = "BunnyRotationReborn";
 		const string subtitle = "Update Notes";
 
 		var s = M3.Scheme;
@@ -256,7 +256,7 @@ internal sealed class UpdateNotesWindow : Window
 		else
 		{
 			drawList.AddRectFilled(logoMin, logoMax, M3.U32(s.PrimaryContainer), M3.ShapeSmall);
-			M3Draw.IconCentered(drawList, FontAwesomeIcon.Fire, logoMin, logoMax, s.OnPrimaryContainer);
+			M3Draw.IconCentered(drawList, FontAwesomeIcon.Carrot, logoMin, logoMax, s.OnPrimaryContainer);
 		}
 
 		var textX = logoMax.X + (14f * scale);

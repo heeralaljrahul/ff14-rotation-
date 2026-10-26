@@ -135,9 +135,32 @@ public sealed class SGE_Reborn : SageRotation
 	}
 	#endregion
 
+	/// <summary>
+	/// The player pressed Eukrasia themselves and hasn't spent it yet: the next Eukrasian spell is theirs.
+	/// </summary>
+	private static bool ManualEukrasiaPending => HasEukrasia && ManualActionWithin(ActionID.EukrasiaPvE, 10f);
+
+	protected override bool EmergencyGCD(IAction? nextGCD, out IAction? act)
+	{
+		// Leave the GCD to the player so their Eukrasian shield/heal gets the Eukrasia they pressed.
+		if (ManualEukrasiaPending)
+		{
+			act = null;
+			return true;
+		}
+
+		return base.EmergencyGCD(nextGCD, out act);
+	}
+
 	#region oGCD Logic
 	protected override bool EmergencyAbility(IAction nextGCD, out IAction? act)
 	{
+		if (ManualEukrasiaPending)
+		{
+			// Don't clear or re-aim the player's Eukrasia.
+			return base.EmergencyAbility(nextGCD, out act);
+		}
+
 		// If the last action performed matches any of a list of specific actions, it clears the Eukrasia aim.
 		// This serves as a reset/cleanup mechanism to ensure the decision logic starts fresh for the next cycle.
 		if (IsLastGCD(false, EukrasianPrognosisIiPvE, EukrasianPrognosisPvE,

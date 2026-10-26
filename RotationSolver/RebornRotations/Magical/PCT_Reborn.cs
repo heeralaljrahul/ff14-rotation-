@@ -29,7 +29,7 @@ public sealed class PCT_Reborn : PictomancerRotation
 	public CanvasFlags MotifSwiftCast { get; set; } = CanvasFlags.Weapon;
 
 	[RotationConfig(CombatType.PvE, Name = "Prevent the use of defense abilties during burst")]
-	private bool BurstDefense { get; set; } = true;
+	private bool BurstDefense { get; set; } = false;
 
 	#endregion
 
@@ -72,7 +72,7 @@ public sealed class PCT_Reborn : PictomancerRotation
 	{
 		if (InCombat)
 		{
-			if (RainbowDripSwift && nextGCD.IsTheSameTo(false, RainbowDripPvE) && SwiftcastPvE.CanUse(out act))
+			if (RainbowDripSwift && !HasRainbowBright && nextGCD.IsTheSameTo(false, RainbowDripPvE) && SwiftcastPvE.CanUse(out act))
 			{
 				return true;
 			}

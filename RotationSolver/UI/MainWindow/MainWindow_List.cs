@@ -108,7 +108,7 @@ public partial class MainWindow
 		ImGui.SetNextItemWidth(ImGui.GetWindowWidth());
 		_ = ImGui.InputTextWithHint("##Searching the action", UiString.ConfigWindow_List_StatusNameOrId.GetDescription(), ref _statusSearching, 50);
 
-		using var table = ImRaii.Table("Rotation Solver List Statuses", 4, ImGuiTableFlags.BordersInner | ImGuiTableFlags.Resizable | ImGuiTableFlags.SizingStretchSame);
+		using var table = ImRaii.Table("BunnyRotationReborn List Statuses", 4, ImGuiTableFlags.BordersInner | ImGuiTableFlags.Resizable | ImGuiTableFlags.SizingStretchSame);
 		if (table)
 		{
 			ImGui.TableSetupScrollFreeze(0, 1);
@@ -219,7 +219,7 @@ public partial class MainWindow
 		uint removeStatusId = 0;
 		var notLoadId = DefaultNotLoadId;
 
-		var popupId = $"Rotation Solver Popup{name}";
+		var popupId = $"BunnyRotationReborn Popup{name}";
 
 		StatusPopUp(popupId, allStatus, ref _statusSearching, status =>
 		{
@@ -299,7 +299,7 @@ public partial class MainWindow
 
 			ImGui.Spacing();
 
-			using var child = ImRaii.Child("Rotation Solver Reborn Add Status", new Vector2(-1, ChildHeight * Scale));
+			using var child = ImRaii.Child("BunnyRotationReborn Add Status", new Vector2(-1, ChildHeight * Scale));
 			if (child)
 			{
 				var count = Math.Max(1, (int)MathF.Floor(ImGui.GetWindowWidth() / ((size * 3 / 4 * Scale) + ImGui.GetStyle().ItemSpacing.X)));
@@ -363,7 +363,7 @@ public partial class MainWindow
 		ImGui.SetNextItemWidth(ImGui.GetWindowWidth());
 		_ = ImGui.InputTextWithHint("##Searching the action", UiString.ConfigWindow_List_ActionNameOrId.GetDescription(), ref _actionSearching, 50);
 
-		using var table = ImRaii.Table("Rotation Solver List Actions", 4, ImGuiTableFlags.BordersInner | ImGuiTableFlags.Resizable | ImGuiTableFlags.SizingStretchSame);
+		using var table = ImRaii.Table("BunnyRotationReborn List Actions", 4, ImGuiTableFlags.BordersInner | ImGuiTableFlags.Resizable | ImGuiTableFlags.SizingStretchSame);
 		if (table)
 		{
 			ImGui.TableSetupScrollFreeze(0, 1);
@@ -434,7 +434,7 @@ public partial class MainWindow
 		}
 		ImGui.PushID(name);
 		uint removeId = 0;
-		var popupId = $"Rotation Solver Reborn Action Popup{name}";
+		var popupId = $"BunnyRotationReborn Action Popup{name}";
 
 		if (ImGui.Button($"{UiString.ConfigWindow_List_AddAction.GetDescription()}##{name}"))
 		{
@@ -514,7 +514,7 @@ public partial class MainWindow
 
 			ImGui.Spacing();
 
-			using var child = ImRaii.Child("Rotation Solver Add action", new Vector2(-1, ChildHeight * Scale));
+			using var child = ImRaii.Child("BunnyRotationReborn Add action", new Vector2(-1, ChildHeight * Scale));
 			if (child)
 			{
 				if (string.IsNullOrWhiteSpace(_actionPopupSearching))
@@ -605,7 +605,7 @@ public partial class MainWindow
 
 		var territoryId = Svc.ClientState.TerritoryType;
 
-		using var table = ImRaii.Table("Rotation Solver List Territories", 4,
+		using var table = ImRaii.Table("BunnyRotationReborn List Territories", 4,
 			ImGuiTableFlags.BordersInner | ImGuiTableFlags.Resizable | ImGuiTableFlags.SizingStretchSame);
 		if (table)
 		{
@@ -655,7 +655,7 @@ public partial class MainWindow
 			for (var i = 0; i < libs.Length; i++)
 			{
 				ImGui.SetNextItemWidth(width);
-				if (ImGui.InputTextWithHint($"##Rotation Solver Territory Target Name {i}",
+				if (ImGui.InputTextWithHint($"##BunnyRotationReborn Territory Target Name {i}",
 					UiString.ConfigWindow_List_NoHostilesName.GetDescription(), ref libs[i], 1024))
 				{
 					OtherConfiguration.NoHostileNames[territoryId] = libs;
@@ -666,7 +666,7 @@ public partial class MainWindow
 					_ = OtherConfiguration.SaveNoHostileNames();
 				}
 				ImGui.SameLine();
-				if (ImGuiEx.IconButton(FontAwesomeIcon.Ban, $"##Rotation Solver Remove Territory Target Name {i}"))
+				if (ImGuiEx.IconButton(FontAwesomeIcon.Ban, $"##BunnyRotationReborn Remove Territory Target Name {i}"))
 				{
 					removeIndex = i;
 				}
@@ -720,7 +720,7 @@ public partial class MainWindow
 			for (var i = 0; i < libs.Length; i++)
 			{
 				ImGui.SetNextItemWidth(width);
-				if (ImGui.InputTextWithHint($"##Rotation Solver Reborn Territory Provoke Name {i}",
+				if (ImGui.InputTextWithHint($"##BunnyRotationReborn Territory Provoke Name {i}",
 					UiString.ConfigWindow_List_NoProvokeName.GetDescription(), ref libs[i], 1024))
 				{
 					OtherConfiguration.NoProvokeNames[territoryId] = libs;
@@ -731,7 +731,7 @@ public partial class MainWindow
 					_ = OtherConfiguration.SaveNoProvokeNames();
 				}
 				ImGui.SameLine();
-				if (ImGuiEx.IconButton(FontAwesomeIcon.Ban, $"##Rotation Solver Reborn Remove Territory Provoke Name {i}"))
+				if (ImGuiEx.IconButton(FontAwesomeIcon.Ban, $"##BunnyRotationReborn Remove Territory Provoke Name {i}"))
 				{
 					removeIndex = i;
 				}

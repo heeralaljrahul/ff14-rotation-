@@ -428,7 +428,7 @@ public static partial class RSCommands
 		var obj = pronounModule == null ? null : pronounModule->ResolvePlaceholder($"<{tag.ToLowerInvariant()}>", 0, 0);
 		if (obj == null)
 		{
-			PluginLog.Debug($"[DoAction] <{tag}> did not resolve to an object, RSR will pick the target.");
+			PluginLog.Debug($"[DoAction] <{tag}> did not resolve to an object, BRR will pick the target.");
 			return null;
 		}
 

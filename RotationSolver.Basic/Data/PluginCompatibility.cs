@@ -183,7 +183,7 @@ internal static class PluginCompatibility
 			Name = "Olympus",
 			Icon = "",
 			Url = "https://github.com/RoseOfficial/Olympus",
-			Features = "AI slop clone of RSR",
+			Features = "AI slop clone of RotationSolverReborn",
 			Type = CompatibleType.Skill_Usage | CompatibleType.Broken | CompatibleType.Crash
 		},
 		new()
@@ -191,7 +191,7 @@ internal static class PluginCompatibility
 			Name = "Auto PVP Series Grind",
 			Icon = "https://raw.githubusercontent.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind/master/AutoPvpSeriesGrind/Images/Icon.png",
 			Url = "https://github.com/XeldarAlz/FFXIV-AutoPVPSeriesGrind",
-			Features = "AI slop plugin that bot-farms PvP matches by driving RSR through its own chat commands; RSR blocks autorotation in PvP while this is enabled",
+			Features = "AI slop plugin that bot-farms PvP matches by driving BRR through its own chat commands; BRR blocks autorotation in PvP while this is enabled",
 			Type = CompatibleType.Broken | CompatibleType.Crash
 		}
 	];

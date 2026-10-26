@@ -15,7 +15,12 @@ public partial class CustomRotation
 
 		try
 		{
+			UpdateHighEndState();
 			UpdateInfo(); // Rotation specific info updates
+			if (Service.BlockAutomaticActions)
+			{
+				return false;
+			}
 			UpdatePreview();
 
 			CountingOfLastUsing = CountingOfCombatTimeUsing = 0;
@@ -249,6 +254,10 @@ public partial class CustomRotation
 		{
 			// Check for countdown and return the appropriate action if not in combat
 			var countDown = Service.CountDownTime;
+			if (Service.BlockAutomaticActions)
+			{
+				return null;
+			}
 			if (countDown > 0 && !DataCenter.InCombat)
 			{
 				return CountDownAction(countDown);

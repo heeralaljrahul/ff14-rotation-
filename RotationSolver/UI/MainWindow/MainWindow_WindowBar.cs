@@ -18,13 +18,13 @@ public partial class MainWindow
 		MaximumSize = new Vector2(5000, 5000),
 	};
 
-	private const string DiscordUrl = "https://discord.gg/r9V4RHYt6v";
-	private const string KofiUrl = "https://ko-fi.com/ltscombatreborn";
+	private const string DiscordUrl = Service.UPSTREAM_DISCORD_URL;
+	private const string KofiUrl = Service.UPSTREAM_KOFI_URL;
 
 	private static readonly M3WindowAction[] _windowActions =
 	[
-		new("##window_discord", FontAwesomeIcon.Comments, "Join the Discord"),
-		new("##window_kofi", FontAwesomeIcon.MugHot, "Support the developer on Ko-fi"),
+		new("##window_discord", FontAwesomeIcon.Comments, "Join the original RotationSolverReborn Discord"),
+		new("##window_kofi", FontAwesomeIcon.MugHot, "Support the original RotationSolverReborn developers on Ko-fi"),
 		new("##window_reset", FontAwesomeIcon.Skull, "Reset all plugin settings"),
 		new("##window_lock", FontAwesomeIcon.LockOpen, "Lock the window in place"),
 	];
@@ -44,7 +44,7 @@ public partial class MainWindow
 
 	internal bool IsMinimized => _fold.IsMinimized;
 
-	private M3WindowBrand Brand => new(GetLogoTexture(), "RSR Settings");
+	private M3WindowBrand Brand => new(GetLogoTexture(), "BRR Settings");
 
 	internal void Restore()
 	{

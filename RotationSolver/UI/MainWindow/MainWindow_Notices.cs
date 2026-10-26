@@ -55,14 +55,14 @@ public partial class MainWindow
 	private static readonly string[] _baseUsageHints =
 	[
 		"Right-click any action, setting, or toggle to view/copy its macro chat command.",
-		"Use /rsr as a shorter alias for /rotation.",
+		"Use /bsr as a shorter alias for /rotation.",
 		"Use /rotation Auto, /rotation Manual, or /rotation Off to change modes quickly.",
 		"Use the search box (top-left) to jump directly to settings.",
 		"Click the external-link icon in search results to jump to that menu.",
 		"Right-click a setting label to copy a ready-to-use /rotation Settings command.",
 		"Actions tab: click an action icon to configure, enable/disable, or set hotkeys.",
 		"Actions: toggle 'Show on CD Window' to include an action in the cooldown overlay.",
-		"Actions: enable 'Intercepted' to let RSR fire an action you queue (PvE only).",
+		"Actions: enable 'Intercepted' to let BRR fire an action you queue (PvE only).",
 		"UI > Information: enable DTR status, toasts, original cooldowns, and these hints.",
 		"UI > Windows: enable Next Action, Control, Cooldown, and Timeline windows.",
 		"Next Action: 'No Inputs' and 'No Move' options change overlay behavior.",
@@ -92,19 +92,19 @@ public partial class MainWindow
 		"Healing: the only HP that matters is the last one",
 		"Be kind",
 		"You can remove some self-buffs with “/statusoff <Name>” (e.g., Peloton) when needed.",
-		"RSR works best with Legacy Type movement settings."
+		"BRR works best with Legacy Type movement settings."
 	];
 	private static readonly string[] _baseUsageHintsCN =
 	[
 		"右键点击任意动作、设置或开关，可查看/复制其宏聊天命令。",
-		"使用 /rsr 作为 /rotation 的简短别名。",
+		"使用 /bsr 作为 /rotation 的简短别名。",
 		"使用 /rotation Auto、/rotation Manual 或 /rotation Off 快速切换模式。",
 		"使用搜索框（左上角）直接跳转到设置。",
 		"点击搜索结果中的外链图标，可跳转到该菜单。",
 		"右键点击设置标签，可复制一条可直接使用的 /rotation Settings 命令。",
 		"技能 标签页：点击动作图标可配置、启用/禁用或设置热键。",
 		"技能：切换 '在冷却窗口中显示'，将某个动作加入冷却覆盖层。",
-		"技能：启用 'Intercepted'，让 RSR 施放你排队的动作（仅 PvE）。",
+		"技能：启用 'Intercepted'，让 BRR 施放你排队的动作（仅 PvE）。",
 		"界面 > 信息：启用 DTR 状态、通知、原始冷却显示以及这些提示。",
 		"界面 > 窗口：启用 Next Action、Control、Cooldown 和 Timeline 窗口。",
 		"Next Action：'No Inputs' 和 'No Move' 选项会改变覆盖层行为。",
@@ -134,7 +134,7 @@ public partial class MainWindow
 		"治疗：唯一重要的 HP 就是最后一点",
 		"友善待人",
 		"需要时可以用“/statusoff <Name>”移除某些自身增益（例如 速行）。",
-		"RSR在 Legacy Type 移动设置下效果最佳。"
+		"BRR在 Legacy Type 移动设置下效果最佳。"
 	];
 	private int _hintIndex = 0;
 	private float _lastHintSwitch = 0f;
@@ -186,7 +186,7 @@ public partial class MainWindow
 				return _baseUsageHints[index];
 			}
 		}
-		return "Thank you for using Rotation Solver Reborn!";
+		return "Thank you for using BunnyRotationReborn!";
 	}
 
 	private bool DrawNotices()
@@ -210,7 +210,7 @@ public partial class MainWindow
 				or Job.MIN or Job.FSH or Job.BTN)
 			{
 				_ = M3Widgets.Banner("##unsupported_job_banner",
-					$"You are on an unsupported class: {Player.Job}. Rotation Solver only drives combat jobs.",
+					$"You are on an unsupported class: {Player.Job}. BunnyRotationReborn only drives combat jobs.",
 					M3Severity.Error, FontAwesomeIcon.Hammer);
 				ImGui.Dummy(new Vector2(0f, M3.Space2));
 				drewAnything = true;

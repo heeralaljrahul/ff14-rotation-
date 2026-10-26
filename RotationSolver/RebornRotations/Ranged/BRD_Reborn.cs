@@ -1,4 +1,4 @@
-namespace RotationSolver.RebornRotations.Ranged;
+﻿namespace RotationSolver.RebornRotations.Ranged;
 
 [Rotation("Reborn", CombatType.PvE, GameVersion = "7.57", RotationType = RotationType.Reborn,
 	Description = "Please make sure that the three song times add up to 120 seconds, Wanderers default first song for now.")]
@@ -47,7 +47,7 @@ public sealed class BRD_Reborn : BardRotation
 	public bool BRDEsuna { get; set; } = true;
 
 	[RotationConfig(CombatType.PvE, Name = "Prevent the use of defense abilties during burst")]
-	private bool BurstDefense { get; set; } = true;
+	private bool BurstDefense { get; set; } = false;
 
 	private float WANDRemainTime => 45 - WANDTime;
 	private float MAGERemainTime => 45 - MAGETime;
@@ -59,12 +59,99 @@ public sealed class BRD_Reborn : BardRotation
 
 	#endregion
 
+	#region Ultimate Settings
+	[RotationConfig(CombatType.PvE, Name = "Use per-ultimate settings", Tooltip = "Inside an ultimate, use the settings on that ultimate's tab instead of the defaults.", UltimateSection = true)]
+	public bool UseUltimateSettings { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "UCoB: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UCoB)]
+	public bool UcobOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "UCoB: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UCoB)]
+	public bool UcobHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "UCoB: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UCoB)]
+	public float UcobPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "UwU: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UwU)]
+	public bool UwuOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "UwU: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UwU)]
+	public bool UwuHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "UwU: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UwU)]
+	public float UwuPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "TEA: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TEA)]
+	public bool TeaOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "TEA: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TEA)]
+	public bool TeaHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "TEA: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TEA)]
+	public float TeaPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "DSR: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DSR)]
+	public bool DsrOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "DSR: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DSR)]
+	public bool DsrHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "DSR: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DSR)]
+	public float DsrPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "TOP: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TOP)]
+	public bool TopOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "TOP: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TOP)]
+	public bool TopHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "TOP: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TOP)]
+	public float TopPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "FRU: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.FRU)]
+	public bool FruOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "FRU: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.FRU)]
+	public bool FruHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "FRU: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.FRU)]
+	public float FruPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "DMU: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DMU)]
+	public bool DmuOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "DMU: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DMU)]
+	public bool DmuHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "DMU: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DMU)]
+	public float DmuPartyAlignHold { get; set; } = 3;
+
+	private UltimateSettings Ultimate => !UseUltimateSettings ? UltimateSettings.Default : CurrentUltimate switch
+	{
+		UltimateRaid.UCoB => new(UcobOpenerPotion, UcobHoldBurstForDowntime, UcobPartyAlignHold),
+		UltimateRaid.UwU => new(UwuOpenerPotion, UwuHoldBurstForDowntime, UwuPartyAlignHold),
+		UltimateRaid.TEA => new(TeaOpenerPotion, TeaHoldBurstForDowntime, TeaPartyAlignHold),
+		UltimateRaid.DSR => new(DsrOpenerPotion, DsrHoldBurstForDowntime, DsrPartyAlignHold),
+		UltimateRaid.TOP => new(TopOpenerPotion, TopHoldBurstForDowntime, TopPartyAlignHold),
+		UltimateRaid.FRU => new(FruOpenerPotion, FruHoldBurstForDowntime, FruPartyAlignHold),
+		UltimateRaid.DMU => new(DmuOpenerPotion, DmuHoldBurstForDowntime, DmuPartyAlignHold),
+		_ => UltimateSettings.Default,
+	};
+	#endregion
+
 	#region Countdown logic
 	// Defines logic for actions to take during the countdown before combat starts.
 	protected override IAction? CountDownAction(float remainTime)
 	{
 		// tincture needs to be used on -0.7s exactly
-		if (remainTime <= 0.7f && UseBurstMedicine(out var act))
+		if ((!IsInUltimate || Ultimate.OpenerPotion) && remainTime <= 0.7f && UseBurstMedicine(out var act))
 		{
 			return act;
 		}
@@ -72,9 +159,46 @@ public sealed class BRD_Reborn : BardRotation
 	}
 	#endregion
 
+	private readonly BurstAligner _burstAligner = new();
+
+	/// <summary>
+	/// True when Battle Voice (and so Radiant Finale and Raging Strikes, which chain off it) should be held:
+	/// either downtime would eat most of the 20s buff window, or the party's raid buffs haven't gone out yet.
+	/// </summary>
+	private bool HoldTwoMinuteBurst
+	{
+		get
+		{
+			if (!Service.Config.AutomaticBurstHolds)
+			{
+				return false;
+			}
+
+			// AutoBurst was turned back on (e.g. by a hold/release macro) and the burst hasn't gone out yet: go now.
+			if (BurstReleasePending(BattleVoicePvE))
+			{
+				return false;
+			}
+
+			var burstReady = BattleVoicePvE.EnoughLevel && !BattleVoicePvE.Cooldown.IsCoolingDown;
+			if (_burstAligner.ShouldHold(burstReady, Ultimate.PartyAlignHold))
+			{
+				return true;
+			}
+
+			return burstReady && Ultimate.HoldBurstForDowntime && BMRDowntimeWithin(15f);
+		}
+	}
+
 	#region oGCD Logic
 	protected override bool EmergencyAbility(IAction nextGCD, out IAction? act)
 	{
+		// No pre-pull: the opener potion goes in the first weave after the pull instead.
+		if ((!IsInUltimate || Ultimate.OpenerPotion) && InPostPullPotionWindow() && UseBurstMedicine(out act))
+		{
+			return true;
+		}
+
 		if (StatusHelper.PlayerHasStatus(false, StatusID.Doom))
 		{
 			if (TheWardensPaeanPvE.CanUse(out act))
@@ -275,11 +399,19 @@ public sealed class BRD_Reborn : BardRotation
 
 	protected override bool AttackAbility(IAction nextGCD, out IAction? act)
 	{
+		// Recovery after deaths, manual presses or downtime: a buff that is more than 10s away no longer holds
+		// the others back.
+		var ragingStrikesDrifted = RagingStrikesPvE.EnoughLevel && RagingStrikesPvE.Cooldown.IsCoolingDown && !RagingStrikesPvE.Cooldown.WillHaveOneCharge(10);
+		var radiantFinaleDrifted = RadiantFinalePvE.EnoughLevel && RadiantFinalePvE.Cooldown.IsCoolingDown && !RadiantFinalePvE.Cooldown.WillHaveOneCharge(10) && !HasRadiantFinale;
+		var battleVoiceDrifted = BattleVoicePvE.EnoughLevel && BattleVoicePvE.Cooldown.IsCoolingDown && !BattleVoicePvE.Cooldown.WillHaveOneCharge(10) && !HasBattleVoice;
+
 		if (IsBurst && Song != Song.None && MagesBalladPvE.EnoughLevel)
 		{
 			if (((!RadiantFinalePvE.EnoughLevel && !RagingStrikesPvE.Cooldown.IsCoolingDown)
-					|| (RadiantFinalePvE.EnoughLevel && !RadiantFinalePvE.Cooldown.IsCoolingDown && RagingStrikesPvE.EnoughLevel && (!RagingStrikesPvE.Cooldown.IsCoolingDown || RagingStrikesPvE.Cooldown.WillHaveOneCharge(BuffAlignment))))
-					&& ((CurrentTarget?.HasStatus(true, StatusID.Windbite, StatusID.Stormbite) == true && CurrentTarget?.HasStatus(true, StatusID.VenomousBite, StatusID.CausticBite) == true) || DOTBarrage) && BattleVoicePvE.CanUse(out act))
+					|| (RadiantFinalePvE.EnoughLevel && !RadiantFinalePvE.Cooldown.IsCoolingDown && RagingStrikesPvE.EnoughLevel && (!RagingStrikesPvE.Cooldown.IsCoolingDown || RagingStrikesPvE.Cooldown.WillHaveOneCharge(BuffAlignment) || ragingStrikesDrifted))
+					|| radiantFinaleDrifted)
+					&& ((CurrentTarget?.HasStatus(true, StatusID.Windbite, StatusID.Stormbite) == true && CurrentTarget?.HasStatus(true, StatusID.VenomousBite, StatusID.CausticBite) == true) || DOTBarrage)
+					&& !HoldTwoMinuteBurst && BattleVoicePvE.CanUse(out act))
 			{
 				return true;
 			}
@@ -291,7 +423,9 @@ public sealed class BRD_Reborn : BardRotation
 
 			if (((RadiantFinalePvE.EnoughLevel && HasRadiantFinale && HasBattleVoice)
 				|| (!RadiantFinalePvE.EnoughLevel && BattleVoicePvE.EnoughLevel && HasBattleVoice)
-				|| (!RadiantFinalePvE.EnoughLevel && !BattleVoicePvE.EnoughLevel))
+				|| (!RadiantFinalePvE.EnoughLevel && !BattleVoicePvE.EnoughLevel)
+				|| (radiantFinaleDrifted && HasBattleVoice)
+				|| battleVoiceDrifted)
 				&& RagingStrikesPvE.CanUse(out act))
 			{
 				return true;
@@ -310,12 +444,16 @@ public sealed class BRD_Reborn : BardRotation
 			}
 		}
 
-		if (RadiantFinalePvE.EnoughLevel && RadiantFinalePvE.Cooldown.IsCoolingDown && BattleVoicePvE.EnoughLevel && !BattleVoicePvE.Cooldown.IsCoolingDown)
+		// Spend capped repertoire before Empyreal Arrow, whose repertoire proc would otherwise overcap.
+		if (PitchPerfectPvE.CanUse(out act, skipAoeCheck: true, skipComboCheck: true) && Repertoire == 3)
 		{
-			return base.AttackAbility(nextGCD, out act);
+			return true;
 		}
 
-		if ((RagingStrikesPvE.Cooldown.IsCoolingDown || !RagingStrikesPvE.Cooldown.WillHaveOneCharge(15)) && Song != Song.None && EmpyrealArrowPvE.CanUse(out act))
+		// Empyreal Arrow waits for Raging Strikes only while a burst is actually coming; while burst is held
+		// (AutoBurst off, or the hold logic), it keeps its 15s cadence.
+		if ((RagingStrikesPvE.Cooldown.IsCoolingDown || !RagingStrikesPvE.Cooldown.WillHaveOneCharge(15) || !IsBurst || HoldTwoMinuteBurst)
+			&& Song != Song.None && EmpyrealArrowPvE.CanUse(out act))
 		{
 			return true;
 		}
@@ -323,11 +461,6 @@ public sealed class BRD_Reborn : BardRotation
 		if (PitchPerfectPvE.CanUse(out act, skipAoeCheck: true, skipComboCheck: true))
 		{
 			if (SongEndAfter(3) && Repertoire > 0)
-			{
-				return true;
-			}
-
-			if (Repertoire == 3)
 			{
 				return true;
 			}
@@ -575,6 +708,12 @@ public sealed class BRD_Reborn : BardRotation
 			return false;
 		}
 
+		// While burst is held, don't sit on a full gauge waiting for buffs that aren't coming.
+		if (SoulVoice >= 100 && (!IsBurst || HoldTwoMinuteBurst || !BattleVoicePvE.IsEnabled))
+		{
+			return true;
+		}
+
 		if (Song == Song.WanderersMinuet && SoulVoice >= 80 && !HasRagingStrikes)
 		{
 			return false;
@@ -595,7 +734,8 @@ public sealed class BRD_Reborn : BardRotation
 			return true;
 		}
 
-		if (Song == Song.MagesBallad && SoulVoice >= 80 && SongEndAfter(22) && SongEndAfter(18))
+		// The Balance: Apex around halfway through Mage's Ballad, by about 21-19s on the song timer.
+		if (Song == Song.MagesBallad && SoulVoice >= 80 && SongEndAfter(21))
 		{
 			return true;
 		}

@@ -1,4 +1,4 @@
-namespace RotationSolver.RebornRotations.Ranged;
+﻿namespace RotationSolver.RebornRotations.Ranged;
 
 [Rotation("Reborn", CombatType.PvE, GameVersion = "7.57", RotationType = RotationType.Reborn)]
 [SourceCode(Path = "main/RebornRotations/Ranged/DNC_Reborn.cs")]
@@ -16,11 +16,111 @@ public sealed class DNC_Reborn : DancerRotation
 	public string DancePartnerName { get; set; } = "";
 
 	[RotationConfig(CombatType.PvE, Name = "Prevent the use of defense abilties during burst")]
-	private bool BurstDefense { get; set; } = true;
+	private bool BurstDefense { get; set; } = false;
 	#endregion
 	private bool shouldUseLastDance = true;
 
 	private static bool InBurstStatus => StatusHelper.PlayerHasStatus(true, StatusID.Devilment);
+
+	/// <summary>
+	/// Technical Step is about to be danced, so avoid weaving or starting fillers that would delay it.
+	/// False whenever Technical Step won't actually be danced (AutoBurst off, the action toggled off, or held),
+	/// so the rotation keeps going in the meantime.
+	/// </summary>
+	private bool TechnicalStepAboutToDance => IsBurst && TechnicalStepPvE.IsEnabled
+		&& TechnicalStepPvE.Cooldown.ElapsedAfter(118) && !HoldTwoMinuteBurst;
+
+	/// <summary>
+	/// Standard Step is about to be danced. False when the action is toggled off.
+	/// </summary>
+	private bool StandardStepAboutToDance => StandardStepPvE.IsEnabled && StandardStepPvE.Cooldown.ElapsedAfter(28)
+		&& !(TechnicalStepPvE.Cooldown.IsCoolingDown && TechnicalStepPvE.Cooldown.WillHaveOneCharge(6)); // held for Technical, keep filling
+
+	/// <summary>
+	/// True when Technical Step (and Devilment, which follows it) should be held because downtime would eat most
+	/// of the 20s Technical Finish window. There is no party-buff wait: Technical's buff only applies after the
+	/// dance, so waiting before starting it would only push it later.
+	/// </summary>
+	private bool HoldTwoMinuteBurst
+	{
+		get
+		{
+			if (!Service.Config.AutomaticBurstHolds)
+			{
+				return false;
+			}
+
+			// AutoBurst was turned back on (e.g. by a hold/release macro) and the burst hasn't gone out yet: go now.
+			if (BurstReleasePending(TechnicalStepPvE))
+			{
+				return false;
+			}
+
+			var burstReady = TechnicalStepPvE.EnoughLevel && !TechnicalStepPvE.Cooldown.IsCoolingDown;
+
+			// The dance itself takes ~6s before the 20s buff starts.
+			return burstReady && Ultimate.HoldBurstForDowntime && BMRDowntimeWithin(15f);
+		}
+	}
+
+	#region Ultimate Settings
+	[RotationConfig(CombatType.PvE, Name = "Use per-ultimate settings", Tooltip = "Inside an ultimate, use the settings on that ultimate's tab instead of the defaults.", UltimateSection = true)]
+	public bool UseUltimateSettings { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "UCoB: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UCoB)]
+	public bool UcobOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "UCoB: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UCoB)]
+	public bool UcobHoldBurstForDowntime { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "UwU: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UwU)]
+	public bool UwuOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "UwU: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UwU)]
+	public bool UwuHoldBurstForDowntime { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "TEA: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TEA)]
+	public bool TeaOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "TEA: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TEA)]
+	public bool TeaHoldBurstForDowntime { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "DSR: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DSR)]
+	public bool DsrOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "DSR: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DSR)]
+	public bool DsrHoldBurstForDowntime { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "TOP: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TOP)]
+	public bool TopOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "TOP: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TOP)]
+	public bool TopHoldBurstForDowntime { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "FRU: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.FRU)]
+	public bool FruOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "FRU: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.FRU)]
+	public bool FruHoldBurstForDowntime { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "DMU: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DMU)]
+	public bool DmuOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "DMU: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DMU)]
+	public bool DmuHoldBurstForDowntime { get; set; } = true;
+
+	private UltimateSettings Ultimate => !UseUltimateSettings ? UltimateSettings.Default : CurrentUltimate switch
+	{
+		UltimateRaid.UCoB => new(UcobOpenerPotion, UcobHoldBurstForDowntime, 0),
+		UltimateRaid.UwU => new(UwuOpenerPotion, UwuHoldBurstForDowntime, 0),
+		UltimateRaid.TEA => new(TeaOpenerPotion, TeaHoldBurstForDowntime, 0),
+		UltimateRaid.DSR => new(DsrOpenerPotion, DsrHoldBurstForDowntime, 0),
+		UltimateRaid.TOP => new(TopOpenerPotion, TopHoldBurstForDowntime, 0),
+		UltimateRaid.FRU => new(FruOpenerPotion, FruHoldBurstForDowntime, 0),
+		UltimateRaid.DMU => new(DmuOpenerPotion, DmuHoldBurstForDowntime, 0),
+		_ => UltimateSettings.Default,
+	};
+	#endregion
 
 	#region Tracking Properties
 	public override void DisplayRotationStatus()
@@ -38,6 +138,18 @@ public sealed class DNC_Reborn : DancerRotation
 	// Override the method for actions to be taken during countdown phase of combat
 	protected override IAction? CountDownAction(float remainTime)
 	{
+		// The Balance: finish the pre-pull Standard Step 0.5s before the pull
+		if (remainTime <= 0.5f && FinishTheDance(out var finish))
+		{
+			return finish;
+		}
+
+		// and use the potion at 1.5s.
+		if (remainTime <= 1.5f && (!IsInUltimate || Ultimate.OpenerPotion) && UseBurstMedicine(out var potion))
+		{
+			return potion;
+		}
+
 		// If there are 15 or fewer seconds remaining in the countdown 
 		if (remainTime <= 15)
 		{
@@ -86,8 +198,17 @@ public sealed class DNC_Reborn : DancerRotation
 			}
 		}
 
+		// No pre-pull: the opener potion goes in the first weave after the opening Standard Finish, before Technical.
+		if (!IsDancing && (!IsInUltimate || Ultimate.OpenerPotion) && InPostPullPotionWindow(20f)
+			&& !TechnicalStepPvE.Cooldown.IsCoolingDown && UseBurstMedicine(out act))
+		{
+			return true;
+		}
+
 		// Use burst medicine if cooldown for Technical Step has elapsed sufficiently
 		if (TechnicalStepPvE.Cooldown.ElapsedAfter(115)
+			&& (!IsInUltimate || Ultimate.OpenerPotion || CombatTime > 30)
+			&& !HoldTwoMinuteBurst
 			&& UseBurstMedicine(out act))
 		{
 			return true;
@@ -138,7 +259,7 @@ public sealed class DNC_Reborn : DancerRotation
 	protected override bool AttackAbility(IAction nextGCD, out IAction? act)
 	{
 		//If dancing or about to dance avoid using abilities to avoid animation lock delaying the dance
-		if (IsDancing || StandardStepPvE.Cooldown.ElapsedAfter(28) || TechnicalStepPvE.Cooldown.ElapsedAfter(118))
+		if (IsDancing || StandardStepAboutToDance || TechnicalStepAboutToDance)
 		{
 			return base.AttackAbility(nextGCD, out act);
 		}
@@ -219,21 +340,11 @@ public sealed class DNC_Reborn : DancerRotation
 			return true;
 		}
 
-		// Use Technical Step in burst mode if applicable
-		if (HoldTechForTargets)
+		// Use Technical Step in burst mode if applicable, unless it's being held for downtime or party alignment
+		if ((!HoldTechForTargets || HasHostilesInMaxRange) && IsBurst && InCombat && !HoldTwoMinuteBurst
+			&& TechnicalStepPvE.CanUse(out act, skipAoeCheck: true))
 		{
-			if (HasHostilesInMaxRange && IsBurst && InCombat && TechnicalStepPvE.CanUse(out act, skipAoeCheck: true))
-
-			{
-				return true;
-			}
-		}
-		else
-		{
-			if (IsBurst && InCombat && TechnicalStepPvE.CanUse(out act, skipAoeCheck: true))
-			{
-				return true;
-			}
+			return true;
 		}
 
 		// Attempt to use a general attack GCD if none of the above conditions are met
@@ -256,6 +367,13 @@ public sealed class DNC_Reborn : DancerRotation
 		{
 			return false;
 		}
+		// Never let Last Dance expire, and never let Finishing Move or a new Standard Finish replace it.
+		if (HasLastDance && StatusHelper.PlayerWillStatusEndGCD(2, 0, true, StatusID.LastDanceReady)
+			&& LastDancePvE.CanUse(out act, skipAoeCheck: true))
+		{
+			return true;
+		}
+
 		// Use Dance of the Dawn immediately if available
 		if (burst && DanceOfTheDawnPvE.CanUse(out act))
 		{
@@ -263,6 +381,12 @@ public sealed class DNC_Reborn : DancerRotation
 		}
 
 		if (HandleTillana(out act))
+		{
+			return true;
+		}
+
+		if (HasLastDance && (FinishingMovePvEReady || !StandardStepPvE.Cooldown.IsCoolingDown)
+			&& LastDancePvE.CanUse(out act, skipAoeCheck: true))
 		{
 			return true;
 		}
@@ -326,13 +450,14 @@ public sealed class DNC_Reborn : DancerRotation
 		}
 
 		// Further prioritized GCD abilities
-		if ((burst || (Esprit >= 70 && !TechnicalStepPvE.Cooldown.ElapsedAfter(115))) && SaberDancePvE.CanUse(out act, skipAoeCheck: true))
+		// Outside burst, hold Esprit and only Saber Dance at 80+ to avoid overcapping (The Balance).
+		if ((burst || (Esprit >= 80 && !TechnicalStepPvE.Cooldown.ElapsedAfter(115))) && SaberDancePvE.CanUse(out act, skipAoeCheck: true))
 		{
 			return true;
 		}
 
-		var standardReady = StandardStepPvE.Cooldown.ElapsedAfter(28);
-		var technicalReady = TechnicalStepPvE.Cooldown.ElapsedAfter(118);
+		var standardReady = StandardStepAboutToDance;
+		var technicalReady = TechnicalStepAboutToDance;
 
 		if (!(standardReady || technicalReady) &&
 			(!shouldUseLastDance || !LastDancePvE.CanUse(out act, skipAoeCheck: true)))
@@ -401,7 +526,8 @@ public sealed class DNC_Reborn : DancerRotation
 			return false;
 		}
 
-		if (HasTechnicalFinish && StatusHelper.PlayerWillStatusEndGCD(2, 0, true, StatusID.TechnicalFinish) || (TechnicalStepPvE.Cooldown.IsCoolingDown && TechnicalStepPvE.Cooldown.WillHaveOneCharge(5)))
+		// Hold Standard Step if Technical Step comes up within 6s, so Technical stays aligned (The Balance).
+		if (HasTechnicalFinish && StatusHelper.PlayerWillStatusEndGCD(2, 0, true, StatusID.TechnicalFinish) || (TechnicalStepPvE.Cooldown.IsCoolingDown && TechnicalStepPvE.Cooldown.WillHaveOneCharge(6)))
 		{
 			return false;
 		}
@@ -484,6 +610,14 @@ public sealed class DNC_Reborn : DancerRotation
 		// Check if Devilment cannot be used
 		if (!DevilmentPvE.CanUse(out _, skipComboCheck: true))
 		{
+			// The Balance: entering burst with high Esprit, push Tillana back until 30 Esprit or less so its
+			// Esprit isn't lost, unless it is about to expire.
+			if (Esprit > 30 && !StatusHelper.PlayerWillStatusEndGCD(2, 0, true, StatusID.FlourishingFinish))
+			{
+				act = null;
+				return false;
+			}
+
 			// Attempt to use Tillana, skipping the AoE check
 			if (TillanaPvE.CanUse(out act, skipAoeCheck: true))
 			{

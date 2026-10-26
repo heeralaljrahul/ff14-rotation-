@@ -12,6 +12,13 @@ public partial class MainWindow
 {
 	private static void DrawAbout()
 	{
+		if (BunnyTheme.Enabled)
+		{
+			DrawHomeDashboard();
+			_aboutHeaders.Draw();
+			return;
+		}
+
 		var scheme = M3.Scheme;
 
 		using (var hero = M3Card.Begin("about_hero", null, style: M3CardStyle.Elevated))
@@ -53,16 +60,16 @@ public partial class MainWindow
 
 			ImGui.SameLine(0f, M3.Space2);
 
-			if (M3Widgets.Button("##about_kofi", "Ko-fi", M3ButtonStyle.Tonal, FontAwesomeIcon.MugHot))
+			if (M3Widgets.Button("##about_kofi", "Original devs' Ko-fi", M3ButtonStyle.Tonal, FontAwesomeIcon.MugHot))
 			{
-				OpenLinkSafely("https://ko-fi.com/ltscombatreborn");
+				OpenLinkSafely(Service.UPSTREAM_KOFI_URL);
 			}
 
 			ImGui.SameLine(0f, M3.Space2);
 
-			if (M3Widgets.Button("##about_discord", "Discord", M3ButtonStyle.Outlined, FontAwesomeIcon.Comments))
+			if (M3Widgets.Button("##about_discord", "Original Discord", M3ButtonStyle.Outlined, FontAwesomeIcon.Comments))
 			{
-				OpenLinkSafely("https://discord.gg/r9V4RHYt6v");
+				OpenLinkSafely(Service.UPSTREAM_DISCORD_URL);
 			}
 
 			var clickingCount = OtherConfiguration.RotationSolverRecord.ClickingCount;
@@ -105,7 +112,7 @@ public partial class MainWindow
 	{
 		if (M3Widgets.Button("##join_supporters", "Join this list", M3ButtonStyle.Tonal, FontAwesomeIcon.MugHot))
 		{
-			OpenLinkSafely("https://ko-fi.com/ltscombatreborn");
+			OpenLinkSafely(Service.UPSTREAM_KOFI_URL);
 		}
 
 		if (_supporters == null || _supporters.Length == 0)
@@ -116,7 +123,7 @@ public partial class MainWindow
 		}
 
 		M3Widgets.SectionLabel(
-			$"Special thanks to the {_supporters.Length} supporters, including those not listed here",
+			$"Special thanks to the {_supporters.Length} RotationSolverReborn supporters, including those not listed here",
 			M3.Scheme.Tertiary);
 
 		var names = new List<string>(_supporters);
@@ -300,21 +307,21 @@ public partial class MainWindow
 
 		if (M3Widgets.Button("##links_github", "GitHub", M3ButtonStyle.Outlined, FontAwesomeIcon.Code))
 		{
-			OpenLinkSafely($"https://GitHub.com/{Service.USERNAME}/{Service.REPO}");
+			OpenLinkSafely(Service.BRAND_GITHUB_URL);
 		}
 
 		ImGui.SameLine(0f, M3.Space2);
 
-		if (M3Widgets.Button("##links_discord", "Discord", M3ButtonStyle.Outlined, FontAwesomeIcon.Comments))
+		if (M3Widgets.Button("##links_discord", "Original Discord", M3ButtonStyle.Outlined, FontAwesomeIcon.Comments))
 		{
-			OpenLinkSafely("https://discord.gg/r9V4RHYt6v");
+			OpenLinkSafely(Service.UPSTREAM_DISCORD_URL);
 		}
 
 		ImGui.SameLine(0f, M3.Space2);
 
-		if (M3Widgets.Button("##links_kofi", "Ko-fi", M3ButtonStyle.Outlined, FontAwesomeIcon.MugHot))
+		if (M3Widgets.Button("##links_kofi", "Original devs' Ko-fi", M3ButtonStyle.Outlined, FontAwesomeIcon.MugHot))
 		{
-			OpenLinkSafely("https://ko-fi.com/ltscombatreborn");
+			OpenLinkSafely(Service.UPSTREAM_KOFI_URL);
 		}
 	}
 }

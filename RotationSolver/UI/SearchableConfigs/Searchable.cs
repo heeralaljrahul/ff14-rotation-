@@ -211,7 +211,7 @@ internal abstract class Searchable(PropertyInfo property) : ISearchable
 
 	public virtual string ID => _property.Name;
 	protected bool IsJob => _isJob;
-	protected string PopupKey => _popupKey ??= $"Rotation Solver RightClicking##{ID}_{GetHashCode()}";
+	protected string PopupKey => _popupKey ??= $"BunnyRotationReborn RightClicking##{ID}_{GetHashCode()}";
 
 	protected string? SupportingText
 		=> Service.Config.UiInlineDescriptions && !string.IsNullOrEmpty(Description) ? Description : null;

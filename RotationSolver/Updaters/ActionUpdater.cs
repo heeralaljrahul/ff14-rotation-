@@ -109,6 +109,13 @@ internal static class ActionUpdater
 		ActionTracer.BeginFrame();
 		try
 		{
+			// Yield selection as well as execution: rotation previews can have job-specific side effects.
+			if (ActionQueueManager.UpdateManualPriority())
+			{
+				ClearNextAction();
+				return;
+			}
+
 			if (localPlayer != null && customRotation != null
 				&& customRotation.TryInvoke(out var newAction, out var gcdAction))
 			{
@@ -250,6 +257,7 @@ internal static class ActionUpdater
 				break;
 			case false when _isDead:
 				_startDeadTime = now;
+				ActionQueueManager.ResetManualPriority();
 				break;
 		}
 
@@ -264,6 +272,12 @@ internal static class ActionUpdater
 
 	internal static bool CanDoAction()
 	{
+		// Recheck ownership after selection, without submitting the manual request a second time this frame.
+		if (ActionQueueManager.BlocksAutomaticActions)
+		{
+			return false;
+		}
+
 		// In Target-Only mode we never perform actions.
 		if (DataCenter.IsTargetOnly)
 		{
@@ -361,10 +375,8 @@ internal static class ActionUpdater
 		}
 
 		var am = ActionManager.Instance();
-		if (am != null
-			&& am->ActionQueued
-			&& NextAction != null
-			&& am->QueuedActionId != NextAction.AdjustedID)
+		// Even the same action ID may be a player's queued heal on a different target.
+		if (am != null && (am->ActionQueued || am->AreaTargetingActionId != 0))
 		{
 			return true;
 		}

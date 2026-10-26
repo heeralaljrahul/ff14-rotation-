@@ -1,9 +1,9 @@
 {
-  "Author": "The Combat Reborn Team",
-  "Name": "Rotation Solver Reborn",
+  "Author": "Bunny",
+  "Name": "BunnyRotationReborn",
   "InternalName": "RotationSolver",
-  "RepoUrl": "https://github.com/FFXIV-CombatReborn/RotationSolverReborn",
-  "Description": "Analyses combat information every frame and finds the best action.\n\nThis means almost all the information available in one frame in combat, including the status of all players in the party, the status of any hostile targets, skill cooldowns, the MP and HP of characters, the location of characters, casting status of the hostile target, combo, combat duration, player level, etc.\nThen, it will highlight the best action on the hot bar, or help you to click on it.\nIt is designed for `general combat`, not for savage or ultimate. Use it carefully.",
+  "RepoUrl": "https://github.com/heeralaljrahul/RotationSolverReborn",
+  "Description": "Bunny's fork of RotationSolverReborn, tuned for high-end and ultimate content.\n\nAnalyses combat information every frame and finds the best action: party and enemy status, cooldowns, HP/MP, positions, enemy casts, combos and more. It can highlight the best action on your hotbar or press it for you.\n\nAdds instant use of pressed actions, instant high-end raises, and per-ultimate burst/potion settings for MCH, BRD and DNC. It does not handle mechanics for you. Use it carefully.",
   "ApplicableVersion": "any",
   "DalamudApiLevel": 15,
   "TestingDalamudApiLevel": 15,
@@ -13,7 +13,8 @@
     "auto",
     "solver",
     "pve",
-    "pvp"
+    "pvp",
+    "bunny"
   ],
   "CategoryTags": [
     "jobs"
@@ -23,7 +24,7 @@
   "CanUnloadAsync": false,
   "LoadPriority": 0,
   "IsTestingExclusive": false,
-  "IconUrl": "https://raw.githubusercontent.com/FFXIV-CombatReborn/RebornAssets/main/IconAssets/RSR_Icon.png",
-  "Punchline": "Analyses combat information every frame and finds the best action.",
+  "IconUrl": "https://raw.githubusercontent.com/heeralaljrahul/RotationSolverReborn/2b86b85e529c109c2145f4a5efcc7eb983d6e744/Images/icon.png",
+  "Punchline": "High-end tuned rotation solver: finds and uses the best action every frame.",
   "AcceptsFeedback": true
 }

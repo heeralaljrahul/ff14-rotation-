@@ -21,9 +21,18 @@ namespace RotationSolver.Basic;
 internal class Service : IDisposable
 {
 	public const string COMMAND = "/rotation";
-	public const string ALTCOMMAND = "/rsr";
+	public const string ALTCOMMAND = "/bsr";
+	public const string AUTOCOMMAND = "/rotation Auto";
+	public const string OFFCOMMAND = "/rotation Off";
+	public const string BRAND_NAME = "BunnyRotationReborn";
+	public const string BRAND_AUTHOR = "Bunny";
+	public const string BRAND_GITHUB_URL = "https://github.com/heeralaljrahul/RotationSolverReborn";
+
+	// Upstream project. Still used to download shared resource data (Resources/*.json) and credited as the original source.
 	public const string USERNAME = "FFXIV-CombatReborn";
 	public const string REPO = "RotationSolverReborn";
+	public const string UPSTREAM_DISCORD_URL = "https://discord.gg/r9V4RHYt6v";
+	public const string UPSTREAM_KOFI_URL = "https://ko-fi.com/ltscombatreborn";
 
 	[EzHook("40 53 55 56 57 48 81 EC ?? ?? ?? ?? 0F 29 B4 24 ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 0F B6 AC 24 ?? ?? ?? ?? 0F 28 F3 49 8B F8", nameof(ActorVfxCreateDetour), true)]
 	private readonly EzHook<ActorVfxCreateDelegate2> actorVfxCreateHook = null!;
@@ -91,6 +100,32 @@ internal class Service : IDisposable
 	/// Gets the remaining countdown time.
 	/// </summary>
 	public static float CountDownTime => Countdown.TimeRemaining;
+
+	private static readonly AutomaticPullGate _automaticPullGate = new();
+
+	private static bool UpdatePullGate()
+	{
+		var player = ECommons.GameHelpers.Player.Object;
+		return _automaticPullGate.CanAct(CountDownTime, DataCenter.InCombat,
+			player == null || player.CurrentHp == 0, Svc.ClientState.TerritoryType,
+			Environment.TickCount64 / 1000d, requirePull: DataCenter.Territory?.IsHighEndDuty == true);
+	}
+
+	/// <summary>
+	/// Blocks automatic actions while a countdown runs (including one left running after a wipe) and, in high-end
+	/// duties, out of combat until the pull.
+	/// </summary>
+	public static bool BlockAutomaticActions => !DataCenter.IsPvP && Config.NoCountdownActions && !UpdatePullGate();
+
+	/// <summary>Whether the last countdown ran to zero rather than being cancelled.</summary>
+	public static bool CountdownReachedZero
+	{
+		get
+		{
+			_ = UpdatePullGate();
+			return _automaticPullGate.Released;
+		}
+	}
 
 	/// <summary>
 	/// Gets or sets the configuration.

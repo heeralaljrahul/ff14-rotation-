@@ -207,10 +207,24 @@ public partial class MainWindow
 		return ShouldShowRotationConfigInternal(config, configSet, _visitingConfigs);
 	}
 
+	private static readonly Dictionary<(Type RotationType, string ConfigName), RotationConfigAttribute?> _configAttributes = [];
+
+	internal static RotationConfigAttribute? GetRotationConfigAttribute(Type rotationType, string configName)
+	{
+		if (!_configAttributes.TryGetValue((rotationType, configName), out var attr))
+		{
+			attr = rotationType.GetProperty(configName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+				?.GetCustomAttribute<RotationConfigAttribute>();
+			_configAttributes[(rotationType, configName)] = attr;
+		}
+
+		return attr;
+	}
+
 	private static readonly Dictionary<(Type RotationType, string ConfigName), string?> _attributeTooltips = [];
 	private static readonly Dictionary<Type, PropertyInfo?> _tooltipProperties = [];
 
-	private static string? GetRotationConfigTooltip(ICustomRotation rotation, IRotationConfig config)
+	internal static string? GetRotationConfigTooltip(ICustomRotation rotation, IRotationConfig config)
 	{
 		var attributeKey = (rotation.GetType(), config.Name);
 		if (!_attributeTooltips.TryGetValue(attributeKey, out var tooltip))
@@ -431,7 +445,7 @@ public partial class MainWindow
 
 		var enable = rotation.IsEnabled;
 		var enableRow = M3SettingRow.Begin(rotation.Name ?? "Rotation",
-			"Turn this rotation off to stop Rotation Solver from driving it.", M3Widgets.SwitchSize());
+			"Turn this rotation off to stop BunnyRotationReborn from driving it.", M3Widgets.SwitchSize());
 		ImGui.SetCursorScreenPos(enableRow.ControlPosition);
 		if (M3Widgets.Switch("##rotation_enabled_switch", ref enable))
 		{
@@ -447,11 +461,25 @@ public partial class MainWindow
 
 		var set = rotation.Configs;
 		var drewSeparator = false;
+		var hasUltimateSettings = false;
+		var rotationType = rotation.GetType();
 
 		foreach (var config in set.Configs)
 		{
 			var requiredType = DataCenter.IsPvP ? CombatType.PvP : CombatType.PvE;
-			if (!config.Type.HasFlag(requiredType) || !ShouldShowRotationConfig(config, set))
+			if (!config.Type.HasFlag(requiredType))
+			{
+				continue;
+			}
+
+			// Ultimate settings live in their own window.
+			if (GetRotationConfigAttribute(rotationType, config.Name)?.InUltimateSection == true)
+			{
+				hasUltimateSettings = true;
+				continue;
+			}
+
+			if (!ShouldShowRotationConfig(config, set))
 			{
 				continue;
 			}
@@ -466,6 +494,20 @@ public partial class MainWindow
 			var supporting = Service.Config.UiInlineDescriptions ? tooltip : null;
 
 			DrawRotationConfigRow(config, rotation, OtherCommandType.Rotations, supporting, tooltip);
+		}
+
+		if (hasUltimateSettings)
+		{
+			M3Widgets.Divider(6f);
+			var current = CustomRotation.CurrentUltimate;
+			var subtitle = current == UltimateRaid.None
+				? "Per-ultimate potion, downtime and party burst settings."
+				: $"You are in {current.GetDescription()}. Its settings are active now.";
+			if (M3SettingRow.NavigationRow("##rotation_ultimate_settings", "Ultimate settings", subtitle,
+				FontAwesomeIcon.Dragon, FontAwesomeIcon.ExternalLinkAlt))
+			{
+				RotationSolverPlugin.OpenUltimateSettings();
+			}
 		}
 
 		DrawJobTargetPriorities();

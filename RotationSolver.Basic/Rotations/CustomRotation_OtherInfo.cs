@@ -46,7 +46,7 @@ public partial class CustomRotation
 	/// <summary>
 	/// 
 	/// </summary>
-	[Description("Is RSR active")]
+	[Description("Is BRR active")]
 	public static bool StateEnabled => DataCenter.State;
 
 	/// <summary>

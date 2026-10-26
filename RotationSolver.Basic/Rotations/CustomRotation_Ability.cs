@@ -1,4 +1,4 @@
-using ECommons.DalamudServices;
+﻿using ECommons.DalamudServices;
 using ECommons.ExcelServices;
 
 namespace RotationSolver.Basic.Rotations;
@@ -616,6 +616,19 @@ public partial class CustomRotation
 		}
 
 		if (Role is JobRole.RangedMagical && !HasSwift && IActionHelper.IsLastActionGCD() && nextGCD.IsTheSameTo(true, ActionID.OccultCometPvE))
+		{
+			if (SwiftcastPvE.CanUse(out act))
+			{
+				return true;
+			}
+		}
+
+		// High-end instant raise: weave Swiftcast in the first oGCD slot after someone dies instead of waiting
+		// for the end of the GCD, so the raise lands on the very next GCD.
+		if ((Role is JobRole.Healer || DataCenter.Job == Job.SMN)
+			&& Service.Config.RaisePlayerBySwift && Service.Config.InstantRaiseHighEnd && IsInHighEndDuty
+			&& DataCenter.MergedStatus.HasFlag(AutoStatus.Raise) && DataCenter.CanRaise()
+			&& DataCenter.DeathTarget != null && !HasSwift)
 		{
 			if (SwiftcastPvE.CanUse(out act))
 			{

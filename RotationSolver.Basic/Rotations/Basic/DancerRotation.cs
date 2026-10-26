@@ -363,7 +363,8 @@ public partial class DancerRotation
 
 	static partial void ModifyTillanaPvE(ref ActionSetting setting)
 	{
-		setting.ActionCheck = () => Esprit <= 50 && TillanaPvEReady;
+		// Esprit <= 50 avoids overcapping, but losing Tillana entirely is worse, so allow it on its last GCDs.
+		setting.ActionCheck = () => (Esprit <= 50 || StatusHelper.PlayerWillStatusEndGCD(2, 0, true, StatusID.FlourishingFinish)) && TillanaPvEReady;
 		setting.MPOverride = () => 0;
 		setting.CreateConfig = () => new ActionConfig()
 		{

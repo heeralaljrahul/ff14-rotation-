@@ -66,6 +66,11 @@
 		<EmbeddedResource Include="Changelog\credits.json" LogicalName="RotationSolver.Changelog.credits.json" />
 		<EmbeddedResource Include="Changelog\banner.jpg" LogicalName="RotationSolver.Changelog.banner.jpg" />
 		<EmbeddedResource Include="..\Images\Logo.png" Link="Images\Logo.png" LogicalName="RotationSolver.Images.Logo.png" />
+		<!-- Plugin installer icon. Dalamud reads images/icon.png next to the DLL for dev plugins. -->
+		<None Include="..\Images\icon.png" Link="images\icon.png" CopyToOutputDirectory="PreserveNewest" />
+		<!-- Bunny theme heading font (SIL Open Font License, see Fonts\Cinzel-OFL.txt). -->
+		<None Include="Fonts\Cinzel-Bold.ttf" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="Fonts\Cinzel-OFL.txt" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 	<ItemGroup>

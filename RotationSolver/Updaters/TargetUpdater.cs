@@ -10,8 +10,8 @@ namespace RotationSolver.Updaters;
 internal static partial class TargetUpdater
 {
 	private static readonly ObjectListDelay<IBattleChara>
-		_raisePartyTargets = new(() => Service.Config.RaiseDelay2),
-		_raiseAllTargets = new(() => Service.Config.RaiseDelay2),
+		_raisePartyTargets = new(GetRaiseDelay),
+		_raiseAllTargets = new(GetRaiseDelay),
 		_dispelPartyTargets = new(() => Service.Config.EsunaDelay);
 
 
@@ -19,6 +19,12 @@ internal static partial class TargetUpdater
 	private static readonly List<IBattleChara> _raiseCandidates = [];
 	private static readonly List<IBattleChara> _dispelCandidates = [];
 
+	private static Vector2 GetRaiseDelay()
+	{
+		return Service.Config.InstantRaiseHighEnd && DataCenter.Territory?.IsHighEndDuty == true
+			? Vector2.Zero
+			: Service.Config.RaiseDelay2;
+	}
 	// Other players outside duties, only gathered for RaiseType.AllOutOfDuty.
 	private static List<IBattleChara> _outOfDutyPlayers = [];
 

@@ -23,6 +23,9 @@ namespace RotationSolver.Commands
 
 		internal static IBaseAction? CurrentAction { get; set; } = null;
 
+		/// <summary>True while BRR itself is using an action, so the input hook can tell its presses from the player's.</summary>
+		internal static bool IsExecutingAction { get; private set; }
+
 		public static void IncrementState()
 		{
 			if (!DataCenter.State)
@@ -65,6 +68,19 @@ namespace RotationSolver.Commands
 
 		public static void DoAction()
 		{
+			// Recheck at the point of submission, before changing targets or submitting a stale next action.
+			if (ActionQueueManager.BlocksAutomaticActions)
+			{
+				return;
+			}
+
+			// Recheck at execution: the selected action may predate the countdown or a wipe.
+			if (Service.BlockAutomaticActions)
+			{
+				ActionUpdater.ClearNextAction();
+				return;
+			}
+
 			if (Player.Object != null && Player.Object.StatusList == null)
 			{
 				return;
@@ -132,7 +148,18 @@ namespace RotationSolver.Commands
 
 			CurrentAction = nextAction as IBaseAction;
 
-			if (nextAction.Use())
+			bool used;
+			IsExecutingAction = true;
+			try
+			{
+				used = nextAction.Use();
+			}
+			finally
+			{
+				IsExecutingAction = false;
+			}
+
+			if (used)
 			{
 
 				_lastActionID = nextAction.AdjustedID;
@@ -457,7 +484,12 @@ namespace RotationSolver.Commands
 					else if (Service.CountDownTime == 0 && _lastCountdownTime > 0.2f)
 					{
 						_lastCountdownTime = 0;
-						CancelState();
+						// A slow frame can miss the timer's last 200ms. The pull gate distinguishes
+						// a completed timer from an early cancellation without canceling a zero-time opener.
+						if (!Service.Config.NoCountdownActions || !Service.CountdownReachedZero)
+						{
+							CancelState();
+						}
 						return;
 					}
 				}

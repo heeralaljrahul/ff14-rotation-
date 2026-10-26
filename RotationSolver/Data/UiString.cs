@@ -62,13 +62,13 @@ namespace RotationSolver.Data
 		[Description("Maximum")]
 		ConfigWindow_RangeUpper,
 
-		[Description("This includes almost all information available in one combat frame, including the status of all party members, hostile target statuses, skill cooldowns, MP and HP of characters, character locations, hostile target casting status, combo state, combat duration, player level, etc.\n\nIt will then highlight the best action on the hotbar, or help you click it.")]
+		[Description("This includes almost all information available in one combat frame, including the status of all party members, hostile target statuses, skill cooldowns, MP and HP of characters, character locations, hostile target casting status, combo state, combat duration, player level, etc.\n\nIt will then highlight the best action on the hotbar, or help you click it.\n\nBunnyRotationReborn is a fork of RotationSolverReborn. AI was used in the development of this fork. Please support the official release and its developers.")]
 		ConfigWindow_About_Description,
 
 		[Description("This is designed for general combat, with optimizations for savage/ultimate content needing to be hand tuned. \n\nBe mindful of your usage in savage/ultimate content.")]
 		ConfigWindow_About_Warning,
 
-		[Description("RSR has helped you by clicking actions {0:N0} times.")]
+		[Description("BRR has helped you by clicking actions {0:N0} times.")]
 		ConfigWindow_About_ClickingCount,
 
 		[Description("State Macros")]
@@ -95,13 +95,13 @@ namespace RotationSolver.Data
 		[Description("Warning Time")]
 		ConfigWindow_About_Warnings_Time,
 
-		[Description("Rotation Solver helps you choose targets and click actions. Any plugin that changes these will affect its decisions.\n\nHere is a list of plugins that have historically (but not always) caused compatibility issues:")]
+		[Description("BunnyRotationReborn helps you choose targets and click actions. Any plugin that changes these will affect its decisions.\n\nHere is a list of plugins that have historically (but not always) caused compatibility issues:")]
 		ConfigWindow_About_Compatibility_Description,
 
-		[Description("Cannot properly execute the behavior that RSR wants to perform.")]
+		[Description("Cannot properly execute the behavior that BRR wants to perform.")]
 		ConfigWindow_About_Compatibility_Mistake,
 
-		[Description("Conflicts with RSR decision-making")]
+		[Description("Conflicts with BRR decision-making")]
 		ConfigWindow_About_Compatibility_Mislead,
 
 		[Description("Causes the game to crash")]
@@ -128,7 +128,7 @@ namespace RotationSolver.Data
 		[Description("Duty Rotation Status")]
 		ConfigWindow_DutyRotation_Status,
 
-		[Description("Used to customize when RSR uses specific actions automatically. Click on an action's icon in the left list. Below, you may set the conditions for when that specific action is used. Each action can have different conditions to override the default rotation behavior.")]
+		[Description("Used to customize when BRR uses specific actions automatically. Click on an action's icon in the left list. Below, you may set the conditions for when that specific action is used. Each action can have different conditions to override the default rotation behavior.")]
 		ConfigWindow_Actions_Description,
 
 		[Description("Allow action to be intercepted by the intercept system")]
@@ -332,7 +332,7 @@ namespace RotationSolver.Data
 		[Description("The animation lock time for individual actions. For example, 0.6s.")]
 		ConfigWindow_Basic_AnimationLockTime,
 
-		[Description("The clicking duration - RSR will try to click at this moment.")]
+		[Description("The clicking duration - BRR will try to click at this moment.")]
 		ConfigWindow_Basic_ClickingDuration,
 
 		[Description("The ideal click time")]
@@ -362,19 +362,19 @@ namespace RotationSolver.Data
 		[Description("Windows")]
 		ConfigWindow_UI_Windows,
 
-		[Description("Change how RSR automatically uses actions")]
+		[Description("Change how BRR automatically uses actions")]
 		ConfigWindow_Auto_Description,
 
 		[Description("Action Usage and Control")]
 		ConfigWindow_Auto_ActionUsage,
 
-		[Description("Which actions RSR can use")]
+		[Description("Which actions BRR can use")]
 		ConfigWindow_Auto_ActionUsage_Description,
 
 		[Description("Healing Usage and Control")]
 		ConfigWindow_Auto_HealingCondition,
 
-		[Description("How RSR should use healing abilities")]
+		[Description("How BRR should use healing abilities")]
 		ConfigWindow_Auto_HealingCondition_Description,
 
 		[Description("Custom State Condition (Unsupported)")]
@@ -413,7 +413,7 @@ namespace RotationSolver.Data
 		[Description("No Casting Condition Set")]
 		ConfigWindow_Auto_NoCastingConditionSet,
 
-		[Description("This will change how RSR uses actions")]
+		[Description("This will change how BRR uses actions")]
 		ConfigWindow_Auto_ActionCondition_Description,
 
 		[Description("Configuration")]
@@ -437,7 +437,7 @@ namespace RotationSolver.Data
 		[Description("Hostile target selection condition")]
 		ConfigWindow_Param_HostileCondition,
 
-		[Description("RSR focuses on the rotation itself. These are side features. Subject to removal at any time.")]
+		[Description("BRR focuses on the rotation itself. These are side features. Subject to removal at any time.")]
 		ConfigWindow_Extra_Description,
 
 		[Description("Event")]
@@ -551,7 +551,7 @@ namespace RotationSolver.Data
 		[Description("Duty Name")]
 		ConfigWindow_Condition_DutyName,
 
-		[Description("Please separately bind damage reduction/shield cooldowns in case RSR fails at a crucial moment in {0}!")]
+		[Description("Please separately bind damage reduction/shield cooldowns in case BRR fails at a crucial moment in {0}!")]
 		HighEndWarning,
 
 		[Description("Click to execute the command")]
@@ -653,13 +653,13 @@ namespace RotationSolver.Data
 		[Description("Open config window")]
 		Commands_Rotation,
 
-		[Description("Start RSR combat rotation state")]
+		[Description("Start BRR combat rotation state")]
 		Commands_Start,
 
-		[Description("Disable RSR combat rotation state")]
+		[Description("Disable BRR combat rotation state")]
 		Commands_Off,
 
-		[Description("Rotation Solver Reborn Settings v")]
+		[Description("BunnyRotationReborn Settings v")]
 		ConfigWindowHeader,
 
 		[Description("This config is job-specific")]
@@ -668,7 +668,7 @@ namespace RotationSolver.Data
 		[Description("This option is unavailable with your current job\n \nRoles or jobs needed:\n{0}")]
 		NotInJob,
 
-		[Description("Welcome to Rotation Solver Reborn!")]
+		[Description("Welcome to BunnyRotationReborn!")]
 		WelcomeWindow_Header,
 
 		[Description("Here's what you missed since you were last here")]
@@ -755,8 +755,8 @@ namespace RotationSolver.Data
 				UiString.ConfigWindow_RangeLower => "最小值",
 				UiString.ConfigWindow_RangeUpper => "最大值",
 				UiString.ConfigWindow_About_Description => "这包括单个战斗帧中几乎所有的可用信息，包括所有队员的状态、敌对目标状态、技能冷却、角色MP和HP、角色位置、敌对目标咏唱状态、连击状态、战斗时长、玩家等级等。\n\n随后它会在热键栏上高亮最佳动作，或帮助你点击它。",
-				UiString.ConfigWindow_About_Warning => "这是为一般战斗设计的，而不是为零式或绝境战内容设计的。\n\n请谨慎使用！虽然RSR并非专门为零式或绝境战内容设计，但在其中也能正常工作，但它不会替你处理机制。请注意并配合使用宏。",
-				UiString.ConfigWindow_About_ClickingCount => "RSR 已通过点击动作帮助了你 {0:N0} 次。",
+				UiString.ConfigWindow_About_Warning => "这是为一般战斗设计的，而不是为零式或绝境战内容设计的。\n\n请谨慎使用！虽然BRR并非专门为零式或绝境战内容设计，但在其中也能正常工作，但它不会替你处理机制。请注意并配合使用宏。",
+				UiString.ConfigWindow_About_ClickingCount => "BRR 已通过点击动作帮助了你 {0:N0} 次。",
 				UiString.ConfigWindow_About_Macros => "状态宏",
 				UiString.ConfigWindow_About_SettingMacros => "动作与设置宏",
 				UiString.ConfigWindow_About_Compatibility => "兼容性",
@@ -765,9 +765,9 @@ namespace RotationSolver.Data
 				UiString.ConfigWindow_About_Warnings => "系统警告",
 				UiString.ConfigWindow_About_Warnings_Warning => "警告消息",
 				UiString.ConfigWindow_About_Warnings_Time => "警告时间",
-				UiString.ConfigWindow_About_Compatibility_Description => "Rotation Solver会帮助你选择目标并点击动作。任何改变这些的插件都会影响它的决策。\n\n以下插件历史上（但并非总是）造成过兼容性问题：",
-				UiString.ConfigWindow_About_Compatibility_Mistake => "无法正确执行RSR想要执行的行为。",
-				UiString.ConfigWindow_About_Compatibility_Mislead => "与RSR的决策冲突",
+				UiString.ConfigWindow_About_Compatibility_Description => "BunnyRotationReborn会帮助你选择目标并点击动作。任何改变这些的插件都会影响它的决策。\n\n以下插件历史上（但并非总是）造成过兼容性问题：",
+				UiString.ConfigWindow_About_Compatibility_Mistake => "无法正确执行BRR想要执行的行为。",
+				UiString.ConfigWindow_About_Compatibility_Mislead => "与BRR的决策冲突",
 				UiString.ConfigWindow_About_Compatibility_Crash => "导致游戏崩溃",
 				UiString.ConfigWindow_About_ThanksToSupporters => "非常感谢Ko-fi赞助者。",
 				UiString.ConfigWindow_About_OpenConfigFolder => "打开配置文件夹",
@@ -776,7 +776,7 @@ namespace RotationSolver.Data
 				UiString.ConfigWindow_DutyRotation_Configuration => "任务配置",
 				UiString.ConfigWindow_Rotation_Status => "状态",
 				UiString.ConfigWindow_DutyRotation_Status => "任务循环状态",
-				UiString.ConfigWindow_Actions_Description => "用于自定义RSR何时自动使用特定动作。在左侧列表中点击动作图标。下方可以设置该特定动作的使用条件。每个动作都可以有不同的条件，以覆盖默认循环行为。",
+				UiString.ConfigWindow_Actions_Description => "用于自定义BRR何时自动使用特定动作。在左侧列表中点击动作图标。下方可以设置该特定动作的使用条件。每个动作都可以有不同的条件，以覆盖默认循环行为。",
 				UiString.ConfigWindow_Actions_IsIntercepted => "允许该动作被拦截系统拦截",
 				UiString.ConfigWindow_Actions_IsRestrictedDOT => "防止对精选怪物列表（例如 狩猎人偶）使用此动作",
 				UiString.ConfigWindow_Actions_MinHPFeature => "允许该动作受最低HP功能限制",
@@ -844,7 +844,7 @@ namespace RotationSolver.Data
 				UiString.ConfigWindow_Basic_NamedConditions => "命名条件",
 				UiString.ConfigWindow_Basic_Others => "其他",
 				UiString.ConfigWindow_Basic_AnimationLockTime => "单个动作的动画锁定时间。例如 0.6 秒。",
-				UiString.ConfigWindow_Basic_ClickingDuration => "点击持续时间 - RSR将尝试在此刻点击。",
+				UiString.ConfigWindow_Basic_ClickingDuration => "点击持续时间 - BRR将尝试在此刻点击。",
 				UiString.ConfigWindow_Basic_IdealClickingTime => "理想点击时间",
 				UiString.ConfigWindow_Basic_RealClickingTime => "实际点击时间",
 				UiString.ConfigWindow_Basic_SwitchCancelConditionSet => "自动关闭条件",
@@ -854,11 +854,11 @@ namespace RotationSolver.Data
 				UiString.ConfigWindow_UI_Information => "信息",
 				UiString.ConfigWindow_UI_Overlay => "悬浮窗",
 				UiString.ConfigWindow_UI_Windows => "窗口",
-				UiString.ConfigWindow_Auto_Description => "更改RSR自动使用动作的方式",
+				UiString.ConfigWindow_Auto_Description => "更改BRR自动使用动作的方式",
 				UiString.ConfigWindow_Auto_ActionUsage => "动作使用与控制",
-				UiString.ConfigWindow_Auto_ActionUsage_Description => "RSR 可以使用哪些动作",
+				UiString.ConfigWindow_Auto_ActionUsage_Description => "BRR 可以使用哪些动作",
 				UiString.ConfigWindow_Auto_HealingCondition => "治疗使用与控制",
-				UiString.ConfigWindow_Auto_HealingCondition_Description => "RSR 应如何使用治疗能力",
+				UiString.ConfigWindow_Auto_HealingCondition_Description => "BRR 应如何使用治疗能力",
 				UiString.ConfigWindow_Auto_StateCondition => "自定义状态条件（不支持）",
 				UiString.ConfigWindow_Auto_HealAreaConditionSet => "范围治疗强制条件",
 				UiString.ConfigWindow_Auto_HealSingleConditionSet => "单体治疗强制条件",
@@ -871,7 +871,7 @@ namespace RotationSolver.Data
 				UiString.ConfigWindow_Auto_AntiKnockbackConditionSet => "防击退强制条件",
 				UiString.ConfigWindow_Auto_SpeedConditionSet => "加速强制条件",
 				UiString.ConfigWindow_Auto_NoCastingConditionSet => "禁止咏唱条件集",
-				UiString.ConfigWindow_Auto_ActionCondition_Description => "这将更改RSR使用动作的方式",
+				UiString.ConfigWindow_Auto_ActionCondition_Description => "这将更改BRR使用动作的方式",
 				UiString.ConfigWindow_Target_Config => "配置",
 				UiString.ConfigWindow_List_Hostile => "敌对",
 				UiString.ConfigWindow_Param_HostileDesc =>
@@ -879,7 +879,7 @@ namespace RotationSolver.Data
 				UiString.ConfigWindow_Actions_MoveUp => "上移",
 				UiString.ConfigWindow_Actions_MoveDown => "下移",
 				UiString.ConfigWindow_Param_HostileCondition => "敌对目标选择条件",
-				UiString.ConfigWindow_Extra_Description => "RSR 专注于循环本身。这些是附加功能，可能随时移除。",
+				UiString.ConfigWindow_Extra_Description => "BRR 专注于循环本身。这些是附加功能，可能随时移除。",
 				UiString.ConfigWindow_EventItem => "事件",
 				UiString.ConfigWindow_Internal => "内部",
 				UiString.ConfigWindow_Extra_Others => "其他",
@@ -917,7 +917,7 @@ namespace RotationSolver.Data
 				UiString.ConfigWindow_Condition_TargetWarning => "你不应使用此项，因为该目标不是动作的目标。请改为从动作中选择。",
 				UiString.ConfigWindow_Condition_TerritoryName => "区域名称",
 				UiString.ConfigWindow_Condition_DutyName => "任务名称",
-				UiString.HighEndWarning => "请在 {0} 的关键时刻另行绑定减伤/护盾冷却，以防RSR失效！",
+				UiString.HighEndWarning => "请在 {0} 的关键时刻另行绑定减伤/护盾冷却，以防BRR失效！",
 				UiString.ConfigWindow_Helper_RunCommand => "点击执行命令",
 				UiString.ConfigWindow_Helper_CopyCommand => "右键复制命令",
 				UiString.ConfigWindow_Events_MacroIndex => "宏编号",
@@ -951,12 +951,12 @@ namespace RotationSolver.Data
 				UiString.SpecialCommandType_Manual => "手动目标",
 				UiString.SpecialCommandType_Off => "关闭",
 				UiString.Commands_Rotation => "打开配置窗口",
-				UiString.Commands_Start => "启动RSR战斗循环状态",
-				UiString.Commands_Off => "禁用RSR战斗循环状态",
-				UiString.ConfigWindowHeader => "RSR设置 v",
+				UiString.Commands_Start => "启动BRR战斗循环状态",
+				UiString.Commands_Off => "禁用BRR战斗循环状态",
+				UiString.ConfigWindowHeader => "BRR设置 v",
 				UiString.JobConfigTip => "此配置为职业专用",
 				UiString.NotInJob => "此选项在你当前职业下不可用\n\n所需职能或职业：\n{0}",
-				UiString.WelcomeWindow_Header => "欢迎使用RSR！",
+				UiString.WelcomeWindow_Header => "欢迎使用BRR！",
 				UiString.WelcomeWindow_WelcomeBack => "这是你上次离开后错过的内容",
 				UiString.WelcomeWindow_Welcome => "看起来你可能是新来的！让我们开始吧！",
 				UiString.WelcomeWindow_Changelog => "最近更改：",
@@ -975,14 +975,14 @@ namespace RotationSolver.Data
 				SpecialCommandType.Speed => "打开窗口以加速。",
 				SpecialCommandType.LimitBreak => "打开窗口以使用极限技。",
 				SpecialCommandType.NoCasting => "打开窗口以不使用咏唱技能。",
-				SpecialCommandType.Intercepting => "RSR 正在拦截动作时的指示器。",
+				SpecialCommandType.Intercepting => "BRR 正在拦截动作时的指示器。",
 
 				StateCommandType.Off => "停止插件。不使用时请务必记得关闭它！",
-				StateCommandType.Auto => "以自动模式启动插件。当脱战或进入战斗时，根据设定条件切换目标。\n可选：你可以在希望RSR执行的命令末尾添加目标类型。例如：/rotation Auto Big",
-				StateCommandType.TargetOnly => "以仅选目标模式启动。RSR会按正常逻辑自动选择目标，但不会执行任何动作。",
+				StateCommandType.Auto => "以自动模式启动插件。当脱战或进入战斗时，根据设定条件切换目标。\n可选：你可以在希望BRR执行的命令末尾添加目标类型。例如：/rotation Auto Big",
+				StateCommandType.TargetOnly => "以仅选目标模式启动。BRR会按正常逻辑自动选择目标，但不会执行任何动作。",
 				StateCommandType.Manual => "以手动模式启动插件。你需要手动选择目标。这将绕过你设置的所有交战设置，并且一旦选中目标就会立即开始攻击。",
 				StateCommandType.AutoDuty => "此模式由 Autoduty 插件管理。",
-				StateCommandType.Henched => "此模式由Henchman插件管理，或由任何其他需要 RSR 只执行循环而不进行目标选择的插件管理。",
+				StateCommandType.Henched => "此模式由Henchman插件管理，或由任何其他需要 BRR 只执行循环而不进行目标选择的插件管理。",
 				StateCommandType.PvP => "用于PvP特定活动的可选模式。",
 
 				OtherCommandType.Settings => "打开设置。",

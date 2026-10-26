@@ -65,20 +65,18 @@ public sealed class SAM_Reborn : SamuraiRotation
 	[RotationDesc(ActionID.ThirdEyePvE, ActionID.TengentsuPvE, ActionID.FeintPvE)]
 	protected override bool DefenseAreaAbility(IAction nextGCD, out IAction? act)
 	{
-		if (!HasZanshinReady)
+		// Requested mitigation goes out even with Zanshin ready; Zanshin keeps for 30s.
+		if (FeintPvE.CanUse(out act))
 		{
-			if (FeintPvE.CanUse(out act))
-			{
-				return true;
-			}
-			if (TengentsuPvE.CanUse(out act))
-			{
-				return true;
-			}
-			if (ThirdEyePvE.CanUse(out act))
-			{
-				return true;
-			}
+			return true;
+		}
+		if (TengentsuPvE.CanUse(out act))
+		{
+			return true;
+		}
+		if (ThirdEyePvE.CanUse(out act))
+		{
+			return true;
 		}
 		return base.DefenseAreaAbility(nextGCD, out act);
 	}
@@ -87,7 +85,7 @@ public sealed class SAM_Reborn : SamuraiRotation
 	#region oGCD Logic
 	protected override bool GeneralAbility(IAction nextGCD, out IAction? act)
 	{
-		if (!HasZanshinReady && Player?.GetHealthRatio() <= TengentsuHealth)
+		if (Player?.GetHealthRatio() <= TengentsuHealth)
 		{
 			if (FeintPvE.CanUse(out act))
 			{
@@ -132,6 +130,12 @@ public sealed class SAM_Reborn : SamuraiRotation
 		}
 
 		if (ZanshinPvE.CanUse(out act))
+		{
+			return true;
+		}
+
+		// Ogi Namikiri grants Meditation: spend a full gauge before it so the stack isn't lost.
+		if (HasOgiNamikiri && ShohaPvE.CanUse(out act))
 		{
 			return true;
 		}

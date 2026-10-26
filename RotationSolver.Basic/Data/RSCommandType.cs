@@ -92,7 +92,7 @@ public enum SpecialCommandType : byte
 	/// <summary>
 	/// Intercepting action.
 	/// </summary>
-	[Description("Indicator for when RSR is intercepting action.")]
+	[Description("Indicator for when BRR is intercepting action.")]
 	Intercepting,
 }
 
@@ -111,13 +111,13 @@ public enum StateCommandType : byte
 	/// Start the addon in Auto mode. When out of combat or when combat starts, switches the target according to the set condition.
 	/// </summary>
 	[Description("Start the addon in Auto mode. When out of combat or when combat starts, switches the target according to the set condition. " +
-		"\r\n Optionally: You can add the target type to the end of the command you want RSR to do. For example: /rotation Auto Big")]
+		"\r\n Optionally: You can add the target type to the end of the command you want BRR to do. For example: /rotation Auto Big")]
 	Auto,
 
 	/// <summary>
 	/// Start the addon in Target-Only mode. RSR will auto-select targets per normal logic but will not perform any actions.
 	/// </summary>
-	[Description("Start in Target-Only mode. RSR will auto-select targets per normal logic but will not perform any actions.")]
+	[Description("Start in Target-Only mode. BRR will auto-select targets per normal logic but will not perform any actions.")]
 	TargetOnly,
 
 	/// <summary>
@@ -135,7 +135,7 @@ public enum StateCommandType : byte
 	/// <summary>
 	/// 
 	/// </summary>
-	[Description("This mode is managed by the Henchman plugin, or any other plugin that requires RSR just do rotation and not targetting.")]
+	[Description("This mode is managed by the Henchman plugin, or any other plugin that requires BRR just do rotation and not targetting.")]
 	Henched,
 
 	/// <summary>

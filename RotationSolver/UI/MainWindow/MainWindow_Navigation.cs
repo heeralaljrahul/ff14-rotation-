@@ -48,7 +48,7 @@ public partial class MainWindow
 
 	private void DrawNavigationColumn(float columnWidth)
 	{
-		using var child = ImRaii.Child("Rotation Solver Side bar", new Vector2(columnWidth, -1f), false, ImGuiWindowFlags.NoScrollbar);
+		using var child = ImRaii.Child("BunnyRotationReborn Side bar", new Vector2(columnWidth, -1f), false, ImGuiWindowFlags.NoScrollbar);
 		if (!child)
 		{
 			return;
@@ -71,7 +71,7 @@ public partial class MainWindow
 		var footerHeight = M3Widgets.PillSize(string.Empty).Y + ImGui.GetStyle().ItemSpacing.Y + (2f * Scale);
 		var listHeight = MathF.Max(80f * Scale, ImGui.GetContentRegionAvail().Y - footerHeight);
 
-		using (var list = ImRaii.Child("Rotation Solver Nav List", new Vector2(-1f, listHeight), false))
+		using (var list = ImRaii.Child("BunnyRotationReborn Nav List", new Vector2(-1f, listHeight), false))
 		{
 			if (list)
 			{
@@ -172,19 +172,26 @@ public partial class MainWindow
 		var drawList = ImGui.GetWindowDrawList();
 
 		var logo = GetLogoTexture();
+		var bunny = BunnyTheme.Enabled;
+		var logoRounding = bunny ? logoSize * 0.5f : M3.ShapeSmall;
 		if (logo?.Handle != null)
 		{
 			drawList.AddImageRounded(logo.Handle, logoMin, logoMax, Vector2.Zero, Vector2.One,
-				M3.U32(Vector4.One), M3.ShapeSmall);
+				M3.U32(Vector4.One), logoRounding);
 		}
 		else
 		{
-			M3Draw.IconCentered(drawList, FontAwesomeIcon.Fire, logoMin, logoMax, scheme.Primary);
+			M3Draw.IconCentered(drawList, FontAwesomeIcon.Carrot, logoMin, logoMax, scheme.Primary);
+		}
+
+		if (bunny)
+		{
+			BunnyTheme.GlowRing(drawList, (logoMin + logoMax) * 0.5f, (logoSize * 0.5f) + (3f * Scale));
 		}
 
 		if (hovered)
 		{
-			drawList.AddRectFilled(logoMin, logoMax, M3.U32(scheme.OnSurface, M3.StateHover), M3.ShapeSmall);
+			drawList.AddRectFilled(logoMin, logoMax, M3.U32(scheme.OnSurface, M3.StateHover), logoRounding);
 			ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
 		}
 
@@ -215,7 +222,40 @@ public partial class MainWindow
 		ImGui.SetCursorScreenPos(new Vector2(origin.X, logoMax.Y));
 		ImGui.Dummy(new Vector2(wholeWidth, M3.Space1));
 
+		if (bunny && expanded)
+		{
+			DrawWordmark(wholeWidth);
+		}
+
 		DrawRotationCard(wholeWidth, expanded);
+	}
+
+	/// <summary>"BunnyRotation" in the gold display font over a letter-spaced "REBORN".</summary>
+	private static void DrawWordmark(float wholeWidth)
+	{
+		var drawList = ImGui.GetWindowDrawList();
+		var origin = ImGui.GetCursorScreenPos();
+		const string name = "BunnyRotation";
+		const string reborn = "Reborn";
+
+		Vector2 nameSize;
+		var display = BunnyTheme.PushDisplay(false);
+		using (display)
+		using (ImRaii.PushFont(M3.TitleMedium, display == null))
+		{
+			nameSize = ImGui.CalcTextSize(name);
+			drawList.AddText(new Vector2(origin.X + ((wholeWidth - nameSize.X) * 0.5f), origin.Y), M3.U32(BunnyTheme.Gold, 1f), name);
+		}
+
+		var rebornSize = BunnyTheme.EyebrowSize(reborn);
+		BunnyTheme.Eyebrow(drawList, new Vector2(origin.X + ((wholeWidth - rebornSize.X) * 0.5f), origin.Y + nameSize.Y + (1f * Scale)),
+			reborn, BunnyTheme.TextMuted);
+		ImGui.Dummy(new Vector2(wholeWidth, nameSize.Y + rebornSize.Y + M3.Space1));
+
+		var pillWidth = M3Widgets.PillSize(BunnyTheme.VersionLabel, FontAwesomeIcon.Tag).X;
+		ImGui.SetCursorPosX(ImGui.GetCursorPosX() + MathF.Max(0f, (wholeWidth - pillWidth) * 0.5f));
+		BunnyTheme.VersionPill("##bunny_nav_version");
+		ImGui.Dummy(new Vector2(wholeWidth, M3.Space1));
 	}
 
 	private void DrawRotationCard(float wholeWidth, bool expanded)
@@ -317,7 +357,7 @@ public partial class MainWindow
 			SetActiveTab(MainWindowTab.Rotation);
 		}
 
-		const string popupId = "Rotation Solver Select Rotation";
+		const string popupId = "BunnyRotationReborn Select Rotation";
 		if (hovered && ImGui.IsMouseClicked(ImGuiMouseButton.Right))
 		{
 			ImGui.OpenPopup(popupId);
@@ -344,7 +384,7 @@ public partial class MainWindow
 			if (expanded)
 			{
 				_ = M3Widgets.Pill("##no_combat_job", "Non-combat job", M3.Scheme.OnSurfaceVariant, FontAwesomeIcon.Hammer,
-					"Rotation Solver only drives combat jobs.");
+					"BunnyRotationReborn only drives combat jobs.");
 			}
 
 			return;
@@ -497,7 +537,7 @@ public partial class MainWindow
 
 		if (_cachedDiagInfo == null)
 		{
-			_ = diagInfo.AppendLine($"Rotation Solver Reborn v{typeof(MainWindow).Assembly.GetName().Version?.ToString() ?? "?.?.?"}");
+			_ = diagInfo.AppendLine($"BunnyRotationReborn v{typeof(MainWindow).Assembly.GetName().Version?.ToString() ?? "?.?.?"}");
 			_ = diagInfo.AppendLine("Failed to get Dalamud start info.");
 		}
 		else
@@ -505,7 +545,7 @@ public partial class MainWindow
 			_ = diagInfo.AppendLine($"OS Type: {_cachedDiagInfo.Platform}");
 			_ = diagInfo.AppendLine($"FFXIV Version: {_cachedDiagInfo.GameVersion}");
 			_ = diagInfo.AppendLine($"Dalamud Version: {Svc.PluginInterface.GetDalamudVersion().Version.ToString()}");
-			_ = diagInfo.AppendLine($"Rotation Solver Reborn v{_cachedDiagInfo.RSRVersion}");
+			_ = diagInfo.AppendLine($"BunnyRotationReborn v{_cachedDiagInfo.RSRVersion}");
 			_ = diagInfo.AppendLine($"Dalamud Staging: {DataCenter.DalamudStagingEnabled}");
 			_ = diagInfo.AppendLine($"Game Language: {_cachedDiagInfo.Language}");
 			_ = diagInfo.AppendLine($"Update Frequency: {Service.Config.MinUpdatingTime}");

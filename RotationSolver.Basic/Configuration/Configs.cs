@@ -305,7 +305,7 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 		 Filter = DutySpecificPvP)]
 	private static readonly bool _autoOnPvPMatchStart = true;
 
-	[ConditionBool, UI("Set RSR to PvP specific state when enabled in PvP zone.",
+	[ConditionBool, UI("Set BRR to PvP specific state when enabled in PvP zone.",
 		 Filter = DutySpecificPvP)]
 	private static readonly bool _pvpStateControl = false;
 
@@ -359,9 +359,14 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	Filter = AutoActionUsage, Section = 5)]
 	private static readonly bool _bmrSafetyCheckIntercept = false;
 
-	[ConditionBool, UI("Intercept player input and queue it for RSR to execute the action. (PvE only)",
+	[ConditionBool, UI("Prioritize manual button presses",
+		Description = "Your latest press goes to the game immediately and takes priority over automatic actions. If blocked only by the current cast, GCD or animation lock, BRR yields until that press can use the next legal slot, then resumes. Invalid or long-cooldown requests are discarded. This works with legacy interception off.",
+		Filter = AutoActionUsage, Section = 5)]
+	private static readonly bool _manualInputPriority = true;
+
+	[ConditionBool, UI("Intercept player input and queue it for BRR to execute the action. (PvE only)",
 	Filter = AutoActionUsage, Section = 5)]
-	private static readonly bool _interceptAction3 = true;
+	private static readonly bool _interceptAction3 = false;
 
 	[ConditionBool, UI("Allow intercepting Spells.",
 	Filter = AutoActionUsage, Section = 5, Parent = nameof(InterceptAction3))]
@@ -387,13 +392,18 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	Filter = AutoActionUsage, Section = 5, Parent = nameof(InterceptAction3))]
 	private static readonly bool _interceptPassing = true;
 
-	[UI("Intercepted action execution window (amount of time RSR is allowed to attempt to use an action after it has been intercepted)",
+	[ConditionBool, UI("Use my button presses first (instant press).",
+	Description = "Legacy behavior, used when Prioritize manual button presses is disabled: forward the press to the game, then hold eligible refused presses in the command-action queue for the intercept window. The new manual-priority option does not use this fallback or its rotation eligibility rules. Native game restrictions still apply.",
+	Filter = AutoActionUsage, Section = 5, Parent = nameof(InterceptAction3))]
+	private static readonly bool _interceptInstantUse = true;
+
+	[UI("Intercepted action execution window (amount of time BRR is allowed to attempt to use an action after it has been intercepted)",
 	Filter = AutoActionUsage, Section = 5)]
 	[Range(1, 10, ConfigUnitType.Seconds)]
 	public float InterceptActionTime { get; set; } = 5;
 
 	[ConditionBool, UI("Use BossModReborn's Cooldown Planner actions with the interception system (Experimental)",
-		Description = "When enabled and BossModReborn is loaded, RSR will allow actions planned in BMR's Cooldown Planner to pass through the intercept system when their window is active.",
+		Description = "When enabled and BossModReborn is loaded, BRR will allow actions planned in BMR's Cooldown Planner to pass through the intercept system when their window is active.",
 		Filter = AutoActionUsage, Section = 5, Parent = nameof(InterceptAction3))]
 	private static readonly bool _useBMRPlan = false;
 
@@ -572,7 +582,7 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 		Filter = BasicAutoSwitch, Section = 1)]
 	private static readonly bool _cancelStateOnCombatBeforeCountdown = false;
 
-	[ConditionBool, UI("I understand that Auto On settings will turn RSRs autorotation on, automatically.",
+	[ConditionBool, UI("I understand that Auto On settings will turn BRR's autorotation on, automatically.",
 		Filter = BasicAutoSwitch, Section = 1)]
 	private static readonly bool _AutoOnYes = false;
 
@@ -705,7 +715,7 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	private static readonly bool _showHints = true;
 
 	[ConditionBool, UI("Color disabled actions on hotbars",
-		Description = "When enabled, actions you have disabled in RSR will be tinted on in-game hotbars.",
+		Description = "When enabled, actions you have disabled in BRR will be tinted on in-game hotbars.",
 		Filter = UiInformation)]
 	private static readonly bool _reddenDisabledHotbarActions = false;
 
@@ -717,25 +727,42 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 		Filter = UiInformation)]
 	private static readonly bool _uiInlineDescriptions = true;
 
+	/// <summary>Bunny Gold: the glow of the golden gun in the BunnyRotationReborn artwork.</summary>
+	public static readonly Vector4 DefaultAccentColor = new(0xE9 / 255f, 0xB4 / 255f, 0x4C / 255f, 1f);
+
+	/// <summary>The original Rotation Solver Reborn crimson, replaced once by <see cref="DefaultAccentColor"/>.</summary>
+	public static readonly Vector4 OriginalAccentColor = new(0.690f, 0.125f, 0.122f, 1f);
+
 	[UI("Interface accent colour",
-		Description = "This acts as the primary color that all other colors are derived from.",
+		Description = "This acts as the primary color that all other colors are derived from. The default, Bunny Gold, matches the BunnyRotationReborn artwork.",
 		Filter = UiInformation)]
-	public Vector4 UiAccentColor { get; set; } = new(0.690f, 0.125f, 0.122f, 1f);
+	public Vector4 UiAccentColor { get; set; } = DefaultAccentColor;
+
+	[ConditionBool, UI("Bunny theme",
+		Description = "The BunnyRotationReborn look: dark plum windows with gold glow, the bunny artwork in the headers, sparkles and the Cinzel heading font. Turn it off for the plain Material look.",
+		Filter = UiInformation)]
+	private static readonly bool _uiBunnyTheme = true;
+
+	/// <summary>Whether the one-time switch from the original crimson accent to Bunny Gold has run.</summary>
+	public bool BunnyThemeApplied { get; set; }
+
+	/// <summary>Which one-time Bunny theme defaults have been applied to an existing config.</summary>
+	public int BunnyThemeVersion { get; set; }
 
 	[UI("Text size",
-		Description = "Scales the text in every RSR window, on top of Dalamud's own font settings.",
+		Description = "Scales the text in every BRR window, on top of Dalamud's own font settings.",
 		Filter = UiInformation)]
 	[Range(0.75f, 1.75f, ConfigUnitType.Percent, 0.01f)]
 	public float UiTextScale { get; set; } = 1f;
 
 	[UI("Element size",
-		Description = "Scales the padding, spacing and controls in every RSR window. Turn it down for a more compact layout; text keeps to the Text size setting.",
+		Description = "Scales the padding, spacing and controls in every BRR window. Turn it down for a more compact layout; text keeps to the Text size setting.",
 		Filter = UiInformation)]
 	[Range(0.75f, 1.75f, ConfigUnitType.Percent, 0.01f)]
 	public float UiElementScale { get; set; } = 1f;
 
 	[UI("Padding",
-		Description = "Scales the space around and between things in every RSR window: window edges, card and row padding, and the gaps between items. Buttons, icons and text keep their size.",
+		Description = "Scales the space around and between things in every BRR window: window edges, card and row padding, and the gaps between items. Buttons, icons and text keep their size.",
 		Filter = UiInformation)]
 	[Range(0.25f, 2f, ConfigUnitType.Percent, 0.01f)]
 	public float UiPaddingScale { get; set; } = 1.5f;
@@ -747,13 +774,28 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	[ConditionBool, UI("Allow rotations that use this config to use abilities defined in the rotation as burst", Filter = AutoActionUsage, Section = 4)]
 	private static readonly bool _autoBurst = true;
 
+	[ConditionBool, UI("Never act during a countdown (no pre-pull)",
+		Description = "Nothing automatic happens while a countdown is running, even after a wipe: no dances, motifs, shields, casts, Reassemble or potions. In Savage, Extreme and Ultimate, nothing automatic happens out of combat at all until the countdown reaches 0 or the pull starts. Elsewhere (dungeons, AutoDuty, overworld) out-of-combat behaviour is unchanged. Manual button presses are unaffected.",
+		Filter = AutoActionUsage, Section = 4)]
+	private static readonly bool _noCountdownActions = true;
+
+	[ConditionBool, UI("Allow extra automatic ranged burst holds",
+		Description = "Opt in to the ranged rotations' extra party-alignment and predicted-downtime holds. Disabled by default so ready burst follows the job's normal rotation. AutoBurst and individual action toggles continue to work independently.",
+		Filter = AutoActionUsage, Section = 4)]
+	private static readonly bool _automaticBurstHolds = false;
+
+	[ConditionBool, UI("Burst immediately when AutoBurst is turned back on",
+		Description = "When a macro (or you) turns AutoBurst off during combat and back on, supported rotations (Machinist, Bard, Dancer) skip their party-alignment and downtime holds until their burst has gone out (at most 60 seconds).",
+		Filter = AutoActionUsage, Section = 4)]
+	private static readonly bool _burstOnRelease = true;
+
 	/// <markdown file="Auto" name="Disable hostile actions if something is casting an action on the Gaze/Stop list" section="Action Usage and Control">
 	/// This setting is linked with the <see cref="RotationSolver.Basic.Configuration.OtherConfiguration.HostileCastingStop">Gaze/Stop list.</see>
 	/// </markdown>
 	[ConditionBool, UI("Disable hostile actions if something is casting an action on the Gaze/Stop list (EXPERIMENTAL)", Filter = AutoActionUsage, Section = 4)]
 	private static readonly bool _castingStop = false;
 
-	[UI("Configurable amount of time before the cast finishes that RSR stops taking actions", Filter = AutoActionUsage, Section = 4, Parent = nameof(CastingStop))]
+	[UI("Configurable amount of time before the cast finishes that BRR stops taking actions", Filter = AutoActionUsage, Section = 4, Parent = nameof(CastingStop))]
 	[Range(0, 15, ConfigUnitType.Seconds)]
 	public float CastingStopTime { get; set; } = 2.5f;
 
@@ -792,7 +834,7 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	private static readonly bool _useAOEDefense = true;
 
 	[ConditionBool, UI("Use BossModReborn timeline for proactive mitigation",
-		Description = "When enabled and BossModReborn is loaded, RSR will use its timeline data to trigger defensive abilities before raidwides and tankbusters hit.",
+		Description = "When enabled and BossModReborn is loaded, BRR will use its timeline data to trigger defensive abilities before raidwides and tankbusters hit.",
 		Filter = AutoActionUsage, Parent = nameof(UseDefenseAbility))]
 	private static readonly bool _useBMRTimeline = false;
 
@@ -878,7 +920,7 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	[ConditionBool, UI("Only show timeline in combat", Parent = nameof(ShowActionTimelineWindow))]
 	private static readonly bool _actionTimelineOnlyInCombat = true;
 
-	[ConditionBool, UI("Only show timeline when RSR is active", Parent = nameof(ShowActionTimelineWindow))]
+	[ConditionBool, UI("Only show timeline when BRR is active", Parent = nameof(ShowActionTimelineWindow))]
 	private static readonly bool _actionTimelineOnlyWhenActive = true;
 
 	[ConditionBool, UI("Show oGCD actions in timeline", Parent = nameof(ShowActionTimelineWindow))]
@@ -893,11 +935,11 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	[ConditionBool, UI("Record AOE actions", Filter = List)]
 	private static readonly bool _recordCastingArea = true;
 
-	[ConditionBool, UI("Auto turn off RSR when combat is over for more than:",
+	[ConditionBool, UI("Auto turn off BRR when combat is over for more than:",
 		Filter = BasicAutoSwitch)]
 	private static readonly bool _autoOffAfterCombat = true;
 
-	[ConditionBool, UI("Enable RSR click counter in main menu",
+	[ConditionBool, UI("Enable BRR click counter in main menu",
 		Filter = Extra)]
 	private static readonly bool _enableClickingCount = true;
 
@@ -924,11 +966,11 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	[ConditionBool, UI("Record knockback actions", Filter = List2)]
 	private static readonly bool _recordKnockbackies = false;
 
-	[ConditionBool, UI("Set Blue Mage Actions Automatically", Description = "When using a Blue Mage Rotation, RSR can automatically set your spell book to the spells required by that rotation.", Filter = Extra)]
+	[ConditionBool, UI("Set Blue Mage Actions Automatically", Description = "When using a Blue Mage Rotation, BRR can automatically set your spell book to the spells required by that rotation.", Filter = Extra)]
 	private static readonly bool _setBluActions2 = false;
 
 	#region Float
-	[UI("Auto turn off RSR when combat is over for more than...",
+	[UI("Auto turn off BRR when combat is over for more than...",
 		Parent = nameof(AutoOffAfterCombat))]
 	[Range(0, 600, ConfigUnitType.Seconds)]
 	public float AutoOffAfterCombatTime { get; set; } = 30;
@@ -991,6 +1033,11 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 		Filter = HealingActionCondition, Section = 2)]
 	private readonly RaiseType _RaiseType = RaiseType.PartyOnly;
 
+	[ConditionBool, UI("Instant raise in high-end duties (Savage/Extreme/Ultimate)",
+		Description = "Ignores the random raise delay and weaves Swiftcast in the first available oGCD slot as soon as a party member dies, so the raise goes out on the very next GCD.",
+		Filter = HealingActionCondition, Section = 2)]
+	private static readonly bool _instantRaiseHighEnd = true;
+
 	[JobConfig, UI("Raise players that have the Brink of Death debuff",
 		Filter = HealingActionCondition, Section = 2)]
 	private static readonly bool _raiseBrinkOfDeath = true;
@@ -1010,7 +1057,7 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	/// the specified amount of time before your cooldown ends to cast Swiftcast. This is to prevent using your Swiftcast too early and waste it
 	/// if your co-healer manages to raise your target within your global cooldown period.
 	/// </markdown>
-	[JobConfig, UI("How early before next GCD should RSR use swiftcast for raise",
+	[JobConfig, UI("How early before next GCD should BRR use swiftcast for raise",
 		Filter = HealingActionCondition, Section = 2)]
 	[Range(0, 1.0f, ConfigUnitType.Seconds, 0.01f)]
 	public float SwiftcastBuffer { get; set; } = 0.6f;
@@ -1083,7 +1130,7 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	[Range(1, 20, ConfigUnitType.Seconds, 1f)]
 	public float SpecialDuration { get; set; } = 3;
 
-	[UI("Random range of delay for RSR to stop attacking when the target is dead or immune to damage.",
+	[UI("Random range of delay for BRR to stop attacking when the target is dead or immune to damage.",
 		Parent = nameof(UseStopCasting))]
 	[Range(0, 3, ConfigUnitType.Seconds, 0.002f)]
 	public Vector2 StopCastingDelay { get; set; } = new(0.5f, 1);
@@ -1144,7 +1191,7 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	[Range(0, 30, ConfigUnitType.Seconds, 0.02f)]
 	public float AutoHealTimeToKill { get; set; } = 8f;
 
-	[UI("The minimum time between updating RSR information. (Raising this will help with framerate issues but can cause issues with rotation performance)",
+	[UI("The minimum time between updating BRR information. (Raising this will help with framerate issues but can cause issues with rotation performance)",
 	Filter = BasicTimer)]
 	[JobConfig, Range(0, 0.3f, ConfigUnitType.Seconds, 0.002f)]
 	public float MinUpdatingTime { get; set; } = 0.00f;
@@ -1156,8 +1203,8 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	/// Lower numbers mean more oGCDs, but potentially more GCD clipping.
 	/// </markdown>
 	[JobConfig, Range(0.05f, 0.4f, ConfigUnitType.Percent)]
-	[UI("Action Ahead (Percent of your GCD time remaining on a GCD cycle before RSR will try to queue the next GCD)", Filter = BasicTimer,
-	Description = "This setting controls how many oGCDs RSR will try to fit in a single GCD window\nLower numbers mean more oGCDs, but potentially more GCD clipping")]
+	[UI("Action Ahead (Percent of your GCD time remaining on a GCD cycle before BRR will try to queue the next GCD)", Filter = BasicTimer,
+	Description = "This setting controls how many oGCDs BRR will try to fit in a single GCD window\nLower numbers mean more oGCDs, but potentially more GCD clipping")]
 	private readonly float _action6head = 0.25f;
 
 	/// <summary>
@@ -1210,7 +1257,7 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 	private static readonly bool _showCactbotToasts = false;
 
 	[UI("Highlight color.", Parent = nameof(TeachingMode))]
-	public Vector4 TeachingModeColor { get; set; } = new(0f, 1f, 0f, 1f);
+	public Vector4 TeachingModeColor { get; set; } = new(0xF2 / 255f, 0xC4 / 255f, 0x6D / 255f, 1f);
 
 	[UI("Target color", Parent = nameof(TargetColor))]
 	public Vector4 TargetColor { get; set; } = new(1f, 0.2f, 0f, 0.8f);
@@ -1260,7 +1307,7 @@ internal partial class Configs : IPluginConfiguration, IM3Settings
 		Filter = TargetConfig, Section = 2)]
 	private static readonly bool _moveAreaActionFarthest = false;
 
-	[ConditionBool, UI("Hard Target for all actions", Description = "If this is disabled, RSR will only use the game's built-in soft-targeting for allies for heals, shields, etc.",
+	[ConditionBool, UI("Hard Target for all actions", Description = "If this is disabled, BRR will only use the game's built-in soft-targeting for allies for heals, shields, etc.",
 		Filter = TargetConfig, Section = 3)]
 	private static readonly bool _switchTargetFriendly2 = false;
 

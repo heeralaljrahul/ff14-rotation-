@@ -7,24 +7,28 @@ using RotationSolver.Commands;
 
 namespace RotationSolver.Updaters
 {
-	public static class ActionQueueManager
+	public static partial class ActionQueueManager
 	{
 		// Action Manager Hook for intercepting user input
 		private static Hook<UseActionDelegate>? _useActionHook;
 
 		// Delegate for ActionManager UseAction
-		private unsafe delegate bool UseActionDelegate(ActionManager* actionManager, uint actionType, uint actionID, ulong targetObjectID, uint param, uint useType, int pvp, bool* isGroundTarget);
+		private unsafe delegate bool UseActionDelegate(ActionManager* actionManager, uint actionType, uint actionID, ulong targetObjectID, uint param, uint useType, uint comboRouteId, bool* isGroundTarget);
 
 		private const ulong InvalidGameObjectId = 0xE0000000;
 
 		public static void Enable()
 		{
+			ActionManagerEx.ActionIssued -= OnNativeActionIssued;
+			ActionManagerEx.ActionIssued += OnNativeActionIssued;
 			// Initialize hooks
 			InitializeActionHooks();
 		}
 
 		public static void Disable()
 		{
+			ActionManagerEx.ActionIssued -= OnNativeActionIssued;
+			ResetManualPriority();
 			// Dispose hooks
 			DisposeActionHooks();
 		}
@@ -104,8 +108,54 @@ namespace RotationSolver.Updaters
 			}
 		}
 
-		private static unsafe bool UseActionDetour(ActionManager* actionManager, uint actionType, uint actionID, ulong targetObjectID, uint param, uint useType, int pvp, bool* isGroundTarget)
+		private static unsafe bool UseActionDetour(ActionManager* actionManager, uint actionType, uint actionID, ulong targetObjectID, uint param, uint useType, uint comboRouteId, bool* isGroundTarget)
 		{
+			if (RSCommands.IsExecutingAction)
+			{
+				return ForwardAutomaticAction(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
+			}
+
+			// Queue replay and nested native combo calls are not new button presses.
+			if (_forwardingManual.HasValue)
+			{
+				return _useActionHook!.Original(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
+			}
+			if (useType == (uint)ActionManager.UseActionMode.Queue)
+			{
+				var pending = _manualPriority.IsQueued ? _manualPriority.Pending : null;
+				var sequence = actionManager->LastUsedActionSequence;
+				var result = _useActionHook!.Original(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
+				if (pending is { } manual && manual.Matches(actionID) && actionManager->LastUsedActionSequence != sequence)
+				{
+					RecordManualIssued(manual, actionManager->LastUsedActionSequence);
+				}
+				return result;
+			}
+
+			// Remember the player's own presses so rotations can leave them alone (e.g. a manual Eukrasia).
+			if (actionType == (uint)ActionType.Action)
+			{
+				DataCenter.RecordManualAction(Service.GetAdjustedActionId(actionID));
+				if (ManualPriorityEnabled)
+				{
+					return HandleManualPress(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
+				}
+			}
+
+			// Instant mode: the press goes straight to the game first (native targeting, animation lock and input
+			// queue). If the game refuses it, usually because it came before the game's 0.5s queue window opened,
+			// BRR holds it and uses it ahead of its own rotation at the next chance, so the rotation can't race it.
+			if (Service.Config.InterceptInstantUse && _useActionHook?.Original != null)
+			{
+				var used = _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
+				if (!used && actionType == 1 && !Service.Config.ManualInputPriority && !RSCommands.IsExecutingAction)
+				{
+					QueueRefusedPress(actionID, targetObjectID, useType);
+				}
+
+				return used;
+			}
+
 			if (Player.Available && Service.Config.InterceptAction3 && DataCenter.State && DataCenter.InCombat && !DataCenter.IsPvP)
 			{
 				try
@@ -119,13 +169,13 @@ namespace RotationSolver.Updaters
 						{
 							if (adjustedActionId == RSCommands.CurrentAction.AdjustedID)
 							{
-								return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, pvp, isGroundTarget);
+								return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
 							}
 						}
 
 						if (adjustedActionId == 7419 && _useActionHook?.Original != null)
 						{
-							return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, pvp, isGroundTarget);
+							return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
 						}
 
 						if (ShouldInterceptAction(adjustedActionId))
@@ -154,7 +204,7 @@ namespace RotationSolver.Updaters
 										//PluginLog.Debug($"[ActionQueueManager] Not intercepting: insufficient level for {matchingAction.Name}.");
 										if (Service.Config.InterceptPassing)
 										{
-											return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, pvp, isGroundTarget);
+											return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
 										}
 									}
 									else if (!CanInterceptAction(matchingAction))
@@ -162,7 +212,7 @@ namespace RotationSolver.Updaters
 										//PluginLog.Debug($"[ActionQueueManager] Not intercepting: cooldown/window check failed for {matchingAction.Name}.");
 										if (Service.Config.InterceptPassing)
 										{
-											return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, pvp, isGroundTarget);
+											return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
 										}
 									}
 									else if (matchingAction is IBaseAction baseMovAction && baseMovAction.Setting.SpecialType == SpecialActionType.ObjectBasedMovement && Service.Config.BmrSafetyCheckIntercept)
@@ -182,7 +232,7 @@ namespace RotationSolver.Updaters
 										HandleInterceptedAction(matchingAction, actionID, macroTarget);
 										if (Service.Config.InterceptPassing)
 										{
-											return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, pvp, isGroundTarget);
+											return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
 										}
 										return false;
 									}
@@ -192,7 +242,7 @@ namespace RotationSolver.Updaters
 									//PluginLog.Debug($"[ActionQueueManager] Not intercepting: {matchingAction.Name} is not marked for interception.");
 									if (_useActionHook?.Original != null)
 									{
-										return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, pvp, isGroundTarget);
+										return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
 									}
 								}
 							}
@@ -208,11 +258,47 @@ namespace RotationSolver.Updaters
 			// Call original function if available, otherwise return true (allow action)
 			if (_useActionHook?.Original != null)
 			{
-				return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, pvp, isGroundTarget);
+				return _useActionHook.Original(actionManager, actionType, actionID, targetObjectID, param, useType, comboRouteId, isGroundTarget);
 			}
 
 			// Return true to allow the action to proceed if hook is unavailable
 			return true;
+		}
+
+		/// <summary>
+		/// Queues a press the game refused so BRR uses it before its own next action. Only while BRR is driving
+		/// combat; never for BRR's own presses, sequence steps (mudras, dance steps, Eukrasia), actions turned off
+		/// for interception, or ones that won't come off cooldown within the intercept window.
+		/// </summary>
+		private static void QueueRefusedPress(uint actionID, ulong targetObjectID, uint useType)
+		{
+			try
+			{
+				if (!Player.Available || !DataCenter.State || DataCenter.IsPvP
+					|| (useType == (uint)ActionManager.UseActionMode.Macro && !Service.Config.InterceptMacro)
+					|| StatusHelper.PlayerHasStatus(false, StatusHelper.RotationLockoutStatus))
+				{
+					return;
+				}
+
+				var adjustedActionId = Service.GetAdjustedActionId(actionID);
+				var matchingAction = ((ActionID)adjustedActionId).GetActionFromID(false,
+					RotationUpdater.CurrentRotationActions, RotationUpdater.CurrentDutyRotationActions);
+				if (matchingAction == null || !matchingAction.IsIntercepted || !matchingAction.EnoughLevel
+					|| BlackListedInterceptActionsContains((ActionID)matchingAction.ID) || !CanInterceptAction(matchingAction))
+				{
+					return;
+				}
+
+				CommandTarget? macroTarget = useType == (uint)ActionManager.UseActionMode.Macro && targetObjectID != 0 && targetObjectID != InvalidGameObjectId
+					? CommandTarget.FromObject(targetObjectID)
+					: null;
+				HandleInterceptedAction(matchingAction, actionID, macroTarget);
+			}
+			catch (Exception ex)
+			{
+				PluginLog.Error($"[ActionQueueManager] Error queueing refused press {actionID}: {ex}");
+			}
 		}
 
 		private static bool ShouldInterceptAction(uint actionId)

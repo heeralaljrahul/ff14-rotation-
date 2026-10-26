@@ -1,16 +1,73 @@
 {
-  "tagline": "Just a crashfix",
+  "tagline": "Rotation engine tune up",
   "entries": [
     {
       "version": "7.5.7.6",
-      "title": "Crash fix",
+      "title": "BunnyRotationReborn",
       "date": "October 21, 2026",
       "sections": [
         {
-          "title": "Fixes",
-          "icon": "Wrench",
+          "title": "Manual button priority",
+          "icon": "Bolt",
           "items": [
-            "Fixed a game crash that could happen right after your target died or despawned, often while a rotation was checking raid buffs before using a potion."
+            "Fixed manual actions losing to the automatic rotation: your Helios Conjunction, Primal Rend or other combat action now owns the next legal slot when blocked only by the current cast, GCD or animation lock. The rotation resumes afterward.",
+            "The original press and target go to the game immediately. Only the latest request is retained; invalid, expired and long-cooldown requests are discarded. A queued solver action cannot overtake it, and native queue replays are no longer counted as fresh manual presses.",
+            "Manual casts are protected from automatic heal/cast cancellation. Same-action spam does not create an extra deferred cast. Prioritize manual button presses is on by default and works with legacy interception off. Native game restrictions still apply."
+          ]
+        },
+        {
+          "title": "Viper burst",
+          "icon": "Bolt",
+          "items": [
+            "Standard Double Reawaken from The Balance: Serpent's Ire, one more dual wield GCD, then both Reawakens back to back so the second Ouroboros stays in party buffs. Turn it off to Reawaken right after Ire.",
+            "No Vicewinder or Vicepit in the last 10 seconds before Serpent's Ire (unless a charge would go to waste), so a twinblade combo can't delay or break the double Reawaken.",
+            "Potions: the even-minute potion now goes in the weave right before the first Reawaken, ahead of Death Rattle. New optional opener potion, weaved after Vicewinder with nothing pre-pull.",
+            "Reawaken is no longer held back by the combo timer when there's no unfinished dual wield combo to lose."
+          ]
+        },
+        {
+          "title": "Welcome to BunnyRotationReborn",
+          "icon": "Heart",
+          "items": [
+            "Bunny's fork of RotationSolverReborn, tuned for high-end and ultimate content. All the original features are still here.",
+            "Brand new Bunny interface: dark plum windows with a gold glow edge, the bunny artwork with twinkling sparkles in every page header, Cinzel headings, and the bunny in a gold halo above the menu. Home is now a dashboard: switch Auto/Manual/Target only/Off on the header, see your autorotation state, next action, duty and ultimate settings, and copy /bsr macros in one click. Teaching mode glows gold. Turn it off with \"Bunny theme\" on the UI page.",
+            "The chat shortcut is now /bsr instead of /rsr. /rotation still works.",
+            "AI was used in the development of this fork. Please support the official RotationSolverReborn release and its developers."
+          ]
+        },
+        {
+          "title": "Instant actions",
+          "icon": "Bolt",
+          "items": [
+            "Pressing an action now uses it straight away when it's usable, instead of waiting for BRR's next weave window. If it can't be used yet, it is queued like before.",
+            "Your presses win over the rotation. A press the game refuses (during a cast, or before the input queue opens) is now used first at the next chance, ahead of BRR's own GCD or weave, then the rotation carries on. Before, the rotation could fire its next GCD the instant the GCD came back and your press was lost.",
+            "Healers and Summoner raise instantly in Savage, Extreme and Ultimate: no random raise delay, and Swiftcast goes out in the first free oGCD slot."
+          ]
+        },
+        {
+          "title": "Ultimate settings for Machinist, Bard and Dancer",
+          "icon": "Fire",
+          "items": [
+            "Each ultimate (UCoB, UwU, TEA, DSR, TOP, FRU, DMU) has its own opener potion, downtime hold and party buff alignment settings, in a separate Ultimate settings window with a tab per ultimate. Open it from the rotation options.",
+            "2-minute bursts can wait a few seconds for party raid buffs, and are held when BossMod Reborn predicts downtime.",
+            "Machinist uses Reassemble on Drill, always dumps a high battery Queen into Wildfire, and no longer summons Queen into downtime.",
+            "Hold/release macros: when AutoBurst is turned off and back on in combat, Machinist, Bard and Dancer burst straight away for the next 15 seconds instead of waiting on alignment or downtime holds. While AutoBurst is off they play exactly as before.",
+            "Machinist follows The Balance more closely: opener pot at -2s and Reassemble charges saved for the 2-minute window.",
+            "Dancer follows The Balance more closely: pre-pull potion at -1.5s and Standard Finish at -0.5s, Tillana held until 30 Esprit or less, Saber Dance at 80 Esprit outside burst, and Standard Step held when Technical Step is within 6s.",
+            "Bard fires Apex Arrow by about 21s left in Mage's Ballad.",
+            "Pressing an action now hands it straight to the game, exactly as if the plugin were off. It is only queued for BRR if the game refuses it.",
+            "Burst release now stays active until the burst actually goes out (at most 60s) and also overrides Machinist's own downtime checks.",
+            "While AutoBurst is off, Dancer keeps using fillers and feathers, and Bard keeps Empyreal Arrow on cooldown and spends full Soul Voice.",
+            "Bard: three-stack Pitch Perfect before Empyreal Arrow, and a drifted Battle Voice no longer blocks Bard's other oGCDs.",
+            "Machinist: Queen battery plan fixed (80 to 100 step), keeps cycling, resyncs and resets every pull; downtime check uses Queen's real 12s duration; Wildfire falls back to a Hypercharge window if Barrel Stabilizer drifted; Double Check/Checkmate saved for raid buffs.",
+            "Dancer: Last Dance protected from Finishing Move/Standard Finish and from expiring; Tillana usable on its last GCD; no party-buff wait before Technical Step.",
+            "Mitigation (Tactician, Dismantle, Troubadour, Shield Samba) is no longer held back during burst by default.",
+            "No pre-pull: nothing is used while a countdown is running, even after a wipe. Every job starts at 0. Machinist, Bard and Dancer use their opener potion in the first weave after the pull. Turn this off with \"Never act during a countdown (no pre-pull)\" on the Auto page.",
+            "No pre-pull now also covers a countdown left running after a wipe, and in Savage, Extreme and Ultimate blocks everything automatic out of combat until the pull. Dungeons and AutoDuty keep their normal out-of-combat behaviour.",
+            "Button presses go straight to the game first. Sage leaves a Eukrasia you pressed yourself for your own next spell.",
+            "Fixes: Machinist Queen tracking reset every frame (introduced in the previous update), Reaper Enshroud now checks Shroud/Ideal Host, Pictomancer no longer Swiftcasts an instant Rainbow Drip.",
+            "Mitigation is no longer held back by burst or procs on Dark Knight, Pictomancer, Samurai, Reaper and Viper. Samurai spends Shoha before Ogi Namikiri would overcap Meditation.",
+            "Bard buffs recover on their own after a desync instead of waiting on each other; Dancer protects an expiring Last Dance first and keeps filling while Standard Step waits for Technical."
           ]
         }
       ]

@@ -20,7 +20,7 @@ internal sealed class FirstStartTutorialWindow : Window
 		| ImGuiWindowFlags.NoScrollWithMouse
 		| ImGuiWindowFlags.NoSavedSettings;
 
-	private const string DiscordUrl = "https://discord.gg/r9V4RHYt6v";
+	private const string IssuesUrl = Service.BRAND_GITHUB_URL + "/issues";
 
 	private const float StepperLabelBreakpoint = 720f;
 
@@ -55,13 +55,13 @@ internal sealed class FirstStartTutorialWindow : Window
 
 	private static readonly AccentPreset[] AccentPresets =
 	[
-		new("Crimson (default)", 0xB0201F),
-		new("Amber", 0xC7881C),
-		new("Emerald", 0x2E9E63),
-		new("Teal", 0x1F8F99),
-		new("Azure", 0x2F6FD6),
-		new("Violet", 0x7A4FD0),
-		new("Rose", 0xC8427F),
+		new("Bunny Gold (default)", 0xE9B44C),
+		new("Ember", 0xD5955A),
+		new("Bunny Pink", 0xD49AB5),
+		new("Lavender", 0xA88BD6),
+		new("Moonlit Cyan", 0x5FAAC6),
+		new("Berry", 0x8E2F4F),
+		new("Crimson (original)", 0xB0201F),
 	];
 
 	private static readonly StarterMacro[] StarterMacros =
@@ -75,18 +75,18 @@ internal sealed class FirstStartTutorialWindow : Window
 			FontAwesomeIcon.HandPointer,
 			"/rotation Settings AoEType Cleave\r\n/rotation Manual"),
 		new("Stop",
-			"Turns RSR off. Keep this one within easy reach.",
+			"Turns BRR off. Keep this one within easy reach.",
 			FontAwesomeIcon.Stop,
 			"/rotation Off"),
 	];
 
 	private static readonly CommandHelp[] Commands =
 	[
-		new("/rotation", "Open the settings window. /rsr works anywhere /rotation does."),
+		new("/rotation", "Open the settings window. /bsr works anywhere /rotation does."),
 		new("/rotation Auto", "Turn on Auto. Run it again to step to the next hostile targeting rule."),
-		new("/rotation Manual", "Turn on Manual: RSR attacks whatever you target."),
-		new("/rotation TargetOnly", "RSR picks targets and leaves every button press to you."),
-		new("/rotation Off", "Turn RSR off."),
+		new("/rotation Manual", "Turn on Manual: BRR attacks whatever you target."),
+		new("/rotation TargetOnly", "BRR picks targets and leaves every button press to you."),
+		new("/rotation Off", "Turn BRR off."),
 		new("/rotation Control", "Show the Auto / Manual / Off state window."),
 		new("/rotation Changelog", "Open the update notes."),
 	];
@@ -116,7 +116,7 @@ internal sealed class FirstStartTutorialWindow : Window
 	private M3Style.Scope _theme;
 
 	public FirstStartTutorialWindow()
-		: base("Rotation Solver Reborn Tutorial###rsrFirstStartTutorial", BaseFlags)
+		: base("BunnyRotationReborn Tutorial###rsrFirstStartTutorial", BaseFlags)
 	{
 		SizeConstraints = new WindowSizeConstraints()
 		{
@@ -128,20 +128,20 @@ internal sealed class FirstStartTutorialWindow : Window
 		_steps =
 		[
 			new("Welcome", FontAwesomeIcon.Rocket, Chapter.GettingStarted,
-				"Rotation Solver Reborn (RSR) reads the fight every frame, works out the best next action for your job, and either displays it or performs it. This tour covers the essentials in about five minutes. (Reading comprehension required)",
+				"BunnyRotationReborn (BRR) reads the fight every frame, works out the best next action for your job, and either displays it or performs it. This tour covers the essentials in about five minutes. (Reading comprehension required)",
 				DrawWelcome),
 
 			new("UI Customization", FontAwesomeIcon.Palette, Chapter.GettingStarted,
-				"Every RSR window takes its colours from a single accent colour. Pick one you like and set the text and element sizes; this tour updates as you go.",
+				"Every BRR window takes its colours from a single accent colour. Pick one you like and set the text and element sizes; this tour updates as you go.",
 				DrawAppearance,
 				[new("Open the UI page", MainWindowTab.UI)]),
 
-			new("Turning RSR on", FontAwesomeIcon.PowerOff, Chapter.GettingStarted,
-				"RSR is always in one of a few modes. It does nothing until autorotation is activaed, and it can switch itself off again after combat.",
+			new("Turning BRR on", FontAwesomeIcon.PowerOff, Chapter.GettingStarted,
+				"BRR is always in one of a few modes. It does nothing until autorotation is activaed, and it can switch itself off again after combat.",
 				DrawModes),
 
 			new("Settings Window", FontAwesomeIcon.Cog, Chapter.GettingStarted,
-				"Type /rotation (or /rsr) in chat to open the settings. Here is how the window is laid out.",
+				"Type /rotation (or /bsr) in chat to open the settings. Here is how the window is laid out.",
 				DrawSettingsTour,
 				[new("Open the settings", MainWindowTab.Main)]),
 
@@ -156,17 +156,17 @@ internal sealed class FirstStartTutorialWindow : Window
 				[new("Open the Actions page", MainWindowTab.Actions)]),
 
 			new("Auto", FontAwesomeIcon.Robot, Chapter.Configure,
-				"Behaviour shared by every job: how freely to use AoE, when RSR switches itself on and off, healing thresholds and more.",
+				"Behaviour shared by every job: how freely to use AoE, when BRR switches itself on and off, healing thresholds and more.",
 				DrawAutoStep,
 				[new("Open the Auto page", MainWindowTab.Auto)]),
 
 			new("Targeting", FontAwesomeIcon.Crosshairs, Chapter.Configure,
-				"Which enemies RSR will attack in Auto, and the order it picks them in.",
+				"Which enemies BRR will attack in Auto, and the order it picks them in.",
 				DrawTargetStep,
 				[new("Open the Target page", MainWindowTab.Target)]),
 
 			new("Overlays", FontAwesomeIcon.Desktop, Chapter.Configure,
-				"Optional windows that show what RSR is doing, and teaching mode, which lights up the next action on your hotbars.",
+				"Optional windows that show what BRR is doing, and teaching mode, which lights up the next action on your hotbars.",
 				DrawOverlaysStep,
 				[new("Open the UI page", MainWindowTab.UI)]),
 
@@ -181,12 +181,12 @@ internal sealed class FirstStartTutorialWindow : Window
 				[new("Open the Basic page", MainWindowTab.Basic), new("Open the Extra page", MainWindowTab.Extra)]),
 
 			new("Macros", FontAwesomeIcon.Terminal, Chapter.WrapUp,
-				"Everything in RSR can be driven from chat, which means it can live on your hotbar. Here are three macros to start with.",
+				"Everything in BRR can be driven from chat, which means it can live on your hotbar. Here are three macros to start with.",
 				DrawMacrosStep,
 				[new("Open the full command list", MainWindowTab.Main, MainWindow.OpenMacroList)]),
 
 			new("You're all set", FontAwesomeIcon.FlagCheckered, Chapter.WrapUp,
-				"That's the essentials. RSR stays off until you turn it on, so nothing will happen until you are ready.",
+				"That's the essentials. BRR stays off until you turn it on, so nothing will happen until you are ready.",
 				DrawFinishStep),
 		];
 
@@ -314,7 +314,7 @@ internal sealed class FirstStartTutorialWindow : Window
 
 	private static void DrawIdentity()
 	{
-		const string title = "Welcome to Rotation Solver Reborn";
+		const string title = "Welcome to BunnyRotationReborn";
 		const string subtitle = "First start tutorial";
 
 		var s = M3.Scheme;
@@ -344,7 +344,7 @@ internal sealed class FirstStartTutorialWindow : Window
 		if (!M3ActionIcon.Image(drawList, MainWindow.GetLogoTexture(), logoMin, logoMax, M3.ShapeSmall))
 		{
 			drawList.AddRectFilled(logoMin, logoMax, M3.U32(s.PrimaryContainer), M3.ShapeSmall);
-			M3Draw.IconCentered(drawList, FontAwesomeIcon.Fire, logoMin, logoMax, s.OnPrimaryContainer);
+			M3Draw.IconCentered(drawList, FontAwesomeIcon.Carrot, logoMin, logoMax, s.OnPrimaryContainer);
 		}
 
 		var textX = logoMax.X + (14f * scale);
@@ -711,7 +711,7 @@ internal sealed class FirstStartTutorialWindow : Window
 			new(FontAwesomeIcon.Lightbulb, "Picks the next action",
 				"Your job's rotation decides what comes next: GCDs and weaves, heals, mitigation, interrupts and more.", s.Tertiary),
 			new(FontAwesomeIcon.MousePointer, "Uses it for you",
-				"Switched on, RSR presses the action itself. Teaching mode lights it up on your hotbar too, so you can follow along.", s.Secondary),
+				"Switched on, BRR presses the action itself. Teaching mode lights it up on your hotbar too, so you can follow along.", s.Secondary),
 		]);
 
 		Gap(12f);
@@ -720,7 +720,7 @@ internal sealed class FirstStartTutorialWindow : Window
 		Gap(12f);
 
 		DrawInfoCard("tutorial_welcome_tour", "In this tour", FontAwesomeIcon.Map,
-			"Turning RSR on and off, and how Auto, Manual and Target Only differ.",
+			"Turning BRR on and off, and how Auto, Manual and Target Only differ.",
 			"Finding your way around the settings window.",
 			"Checking your rotation, and the handful of settings worth a look on day one.",
 			"Overlays, teaching mode, and macros for your hotbar.");
@@ -751,7 +751,7 @@ internal sealed class FirstStartTutorialWindow : Window
 		if (M3Widgets.Button("##tutorial_appearance_reset", "Reset to defaults", M3ButtonStyle.Text, FontAwesomeIcon.UndoAlt,
 			tooltip: "Puts the accent colour, text size and element size back to how they started."))
 		{
-			Service.Config.UiAccentColor = M3.DefaultSeed;
+			Service.Config.UiAccentColor = Configs.DefaultAccentColor;
 			Service.Config.UiTextScale = 1f;
 			Service.Config.UiElementScale = 1f;
 		}
@@ -771,22 +771,22 @@ internal sealed class FirstStartTutorialWindow : Window
 		DrawTiles(
 		[
 			new(FontAwesomeIcon.Robot, "Auto",
-				"Auto activates the autorotation algorithm and allows RSR to set targets for you based on the next calculated action. Run /rotation Auto again to step to the next targeting rule.", s.Primary),
+				"Auto activates the autorotation algorithm and allows BRR to set targets for you based on the next calculated action. Run /rotation Auto again to step to the next targeting rule.", s.Primary),
 			new(FontAwesomeIcon.HandPointer, "Manual",
-				"Manual activate the autorotation algorithm but does not allow RSR to set targets and locks the hostile target list to only the selected target. Party healing is still possible on Manual mode as RSR uses soft targeting for that.", s.Tertiary),
+				"Manual activate the autorotation algorithm but does not allow BRR to set targets and locks the hostile target list to only the selected target. Party healing is still possible on Manual mode as BRR uses soft targeting for that.", s.Tertiary),
 			new(FontAwesomeIcon.Crosshairs, "Target Only",
-				"RSR chooses targets as in Auto but never uses an action. Every button press is yours.", s.Secondary),
+				"BRR chooses targets as in Auto but never uses an action. Every button press is yours.", s.Secondary),
 			new(FontAwesomeIcon.PowerOff, "Off",
-				"Nothing is targeted or used. Turn RSR off whenever you are not using it.", s.OnSurfaceVariant),
+				"Nothing is targeted or used. Turn BRR off whenever you are not using it.", s.OnSurfaceVariant),
 		], 170f);
 
 		Gap(12f);
-		using (M3Card.Begin("tutorial_modes_switching", "Different ways to control RSR autorotation states", FontAwesomeIcon.ToggleOn))
+		using (M3Card.Begin("tutorial_modes_switching", "Different ways to control BRR autorotation states", FontAwesomeIcon.ToggleOn))
 		{
 			DrawBullets(
-				"From chat or a macro: /rotation Auto, /rotation Manual, /rotation TargetOnly and /rotation Off. /rsr works anywhere /rotation does.",
+				"From chat or a macro: /rotation Auto, /rotation Manual, /rotation TargetOnly and /rotation Off. /bsr works anywhere /rotation does.",
 				"The state window: /rotation Control opens a small Auto / Manual / Off switch you can leave on screen.",
-				"The server info bar: the RSR entry at the top of the screen shows the current state, and clicking it cycles through states.",
+				"The server info bar: the BRR entry at the top of the screen shows the current state, and clicking it cycles through states.",
 				"The Control window (UI page) puts the state, the rotation's status and the special commands on screen during combat.");
 
 			Gap(4f);
@@ -796,7 +796,7 @@ internal sealed class FirstStartTutorialWindow : Window
 			}
 		}
 
-		DrawNote("RSR can switch itself on when a countdown starts, and off again after combat, when you die or when a duty ends. That is set up in the Auto step.");
+		DrawNote("BRR can switch itself on when a countdown starts, and off again after combat, when you die or when a duty ends. That is set up in the Auto step.");
 	}
 
 	private static void DrawSettingsTour()
@@ -816,18 +816,18 @@ internal sealed class FirstStartTutorialWindow : Window
 			new(FontAwesomeIcon.Terminal, "Right-click for macros",
 				"Right-click any setting, toggle or action to see the chat command that changes it, ready to copy.", s.Secondary),
 			new(FontAwesomeIcon.Cube, "Copy diagnostics",
-				"The chip at the bottom of the page list copies a report for support. It pulses red while a plugin known to crash RSR is enabled.", s.Secondary),
+				"The chip at the bottom of the page list copies a report for support. It pulses red while a plugin known to crash BRR is enabled.", s.Secondary),
 		]);
 
 		Gap(12f);
 		DrawInfoCard("tutorial_setting_shortcuts", "Shortcuts on any setting", FontAwesomeIcon.MousePointer,
-			"Right-click a setting for its chat command, which you can run on the spot or copy into a macro. For example, right-clicking \"Auto turn off RSR when combat is over for more than\" on the Auto page gives /rotation Settings AutoOffAfterCombat True.",
-			"Ctrl+click a slider to type an exact value instead of dragging, then press Enter. For example, Ctrl+click the slider under that same setting and type 45 to have RSR switch off 45 seconds after combat ends.");
+			"Right-click a setting for its chat command, which you can run on the spot or copy into a macro. For example, right-clicking \"Auto turn off BRR when combat is over for more than\" on the Auto page gives /rotation Settings AutoOffAfterCombat True.",
+			"Ctrl+click a slider to type an exact value instead of dragging, then press Enter. For example, Ctrl+click the slider under that same setting and type 45 to have BRR switch off 45 seconds after combat ends.");
 
 		DrawPracticeSettings();
 
 		_ = M3Widgets.Banner("##tutorial_reset_warning",
-			"The skull button at the top right of the settings window resets every RSR setting. It asks first, but there is no undo, so back up from the Extra page before trying it.",
+			"The skull button at the top right of the settings window resets every BRR setting. It asks first, but there is no undo, so back up from the Extra page before trying it.",
 			M3Severity.Error, FontAwesomeIcon.Skull);
 	}
 
@@ -857,7 +857,7 @@ internal sealed class FirstStartTutorialWindow : Window
 				or Job.MIN or Job.FSH or Job.BTN;
 
 			_ = nonCombat
-				? M3Widgets.Banner("##tutorial_no_rotation", "You are on a crafting or gathering job. Rotation Solver only drives combat jobs, so switch to one to see its rotation here.",
+				? M3Widgets.Banner("##tutorial_no_rotation", "You are on a crafting or gathering job. BunnyRotationReborn only drives combat jobs, so switch to one to see its rotation here.",
 					M3Severity.Info, FontAwesomeIcon.Hammer)
 				: M3Widgets.Banner("##tutorial_no_rotation", UiString.ConfigWindow_NoRotation.GetDescription(),
 					M3Severity.Error, FontAwesomeIcon.ExclamationTriangle);
@@ -940,14 +940,14 @@ internal sealed class FirstStartTutorialWindow : Window
 			new(FontAwesomeIcon.MousePointer, "Pick an action",
 				"Click any icon to open its settings alongside. The small tick or cross on each icon shows whether it is enabled.", s.Primary),
 			new(FontAwesomeIcon.PowerOff, "Enable or disable",
-				"RSR never uses a disabled action. You can still press it yourself.", s.Tertiary),
+				"BRR never uses a disabled action. You can still press it yourself.", s.Tertiary),
 			new(FontAwesomeIcon.SlidersH, "Tune when it fires",
 				"Depending on the action: a time-to-kill threshold, an HP threshold for heals, how many targets an AoE needs, and whether it shows in the cooldown window.", s.Secondary),
 		]);
 
 		Gap(12f);
 		DrawInfoCard("tutorial_actions_more", "Also worth knowing", FontAwesomeIcon.InfoCircle,
-			"Intercept, on by default in PvE: press an action yourself and RSR queues it, then uses it at the next opportunity instead of fighting you for the GCD. It is set up on the Auto page.",
+			"Intercept, on by default in PvE: press an action yourself and BRR queues it, then uses it at the next opportunity instead of fighting you for the GCD. It is set up on the Auto page.",
 			"Right-click an action for the command that enables or disables it, so a macro can toggle it.",
 			"The list follows your current job and rotation.");
 	}
@@ -957,7 +957,7 @@ internal sealed class FirstStartTutorialWindow : Window
 		DrawAoECard();
 
 		using (M3Card.Begin("tutorial_auto_switch", "Auto switch", FontAwesomeIcon.PowerOff,
-			subtitle: "When RSR switches itself on and off."))
+			subtitle: "When BRR switches itself on and off."))
 		{
 			DrawSwitch("tutorial_start_on_countdown", "Turn on Auto when a countdown starts",
 				"Switches on as soon as a pull timer begins, so the rotation can time its pre-pull actions.",
@@ -966,10 +966,10 @@ internal sealed class FirstStartTutorialWindow : Window
 				$"Switches off once you have been out of combat for {Service.Config.AutoOffAfterCombatTime:0} seconds. The delay is on the Auto page.",
 				Service.Config.AutoOffAfterCombat);
 			DrawSwitch("tutorial_off_when_dead", "Turn off when you die",
-				"Stops RSR the moment you are knocked out.",
+				"Stops BRR the moment you are knocked out.",
 				Service.Config.AutoOffWhenDead);
 			DrawSwitch("tutorial_off_when_duty_completed", "Turn off when a duty is completed",
-				"Stops RSR as the duty's completion screen comes up.",
+				"Stops BRR as the duty's completion screen comes up.",
 				Service.Config.AutoOffWhenDutyCompleted);
 		}
 
@@ -989,7 +989,7 @@ internal sealed class FirstStartTutorialWindow : Window
 		];
 
 		using var card = M3Card.Begin("tutorial_auto_aoe", "AoE usage", FontAwesomeIcon.Bullseye,
-			subtitle: "How freely RSR uses area attacks. A macro can change it too, for example /rotation Settings AoEType Cleave.");
+			subtitle: "How freely BRR uses area attacks. A macro can change it too, for example /rotation Settings AoEType Cleave.");
 
 		var current = Service.Config.AoEType switch
 		{
@@ -1025,16 +1025,16 @@ internal sealed class FirstStartTutorialWindow : Window
 	private static void DrawTargetStep()
 	{
 		using (M3Card.Begin("tutorial_targeting_rules", "Hostile targeting", FontAwesomeIcon.Crosshairs,
-			subtitle: "In Auto, RSR picks targets by the highlighted rule, and each /rotation Auto moves along the list. Click a rule to make it the active one."))
+			subtitle: "In Auto, BRR picks targets by the highlighted rule, and each /rotation Auto moves along the list. Click a rule to make it the active one."))
 		{
 			DrawTargetingRules();
 		}
 
 		DrawInfoCard("tutorial_target_more", "Also on the Target page", FontAwesomeIcon.InfoCircle,
-			"How far RSR looks for enemies, and whether it engages ones that have not attacked you yet.",
+			"How far BRR looks for enemies, and whether it engages ones that have not attacked you yet.",
 			"How it treats striking dummies, FATE mobs, quest targets and target markers.",
 			"Reorder the hostile targeting list, or add and remove rules.",
-			"If RSR pulls things you did not mean to, tighten the engage settings here before touching the rotation.");
+			"If BRR pulls things you did not mean to, tighten the engage settings here before touching the rotation.");
 	}
 
 	private static void DrawTargetingRules()
@@ -1044,7 +1044,7 @@ internal sealed class FirstStartTutorialWindow : Window
 		if (types.Count == 0)
 		{
 			using var color = ImRaii.PushColor(ImGuiCol.Text, M3.Alpha(s.OnSurfaceVariant, 0.95f));
-			ImGui.TextWrapped("The list is empty. RSR fills in its defaults the first time it needs a rule.");
+			ImGui.TextWrapped("The list is empty. BRR fills in its defaults the first time it needs a rule.");
 			return;
 		}
 
@@ -1076,7 +1076,7 @@ internal sealed class FirstStartTutorialWindow : Window
 				"The autorotation state, the rotation's live status and one-click special commands.",
 				Service.Config.ShowControlWindow);
 			DrawSwitch("tutorial_next_action_window", "Next action",
-				"The action RSR will use next, with the GCD as a progress bar. It can show the hotbar keybind as well.",
+				"The action BRR will use next, with the GCD as a progress bar. It can show the hotbar keybind as well.",
 				Service.Config.ShowNextActionWindow);
 			DrawSwitch("tutorial_timeline_window", "Action timeline",
 				"A scrolling record of what was used, and when: GCDs with their casts, oGCDs with their animation lock.",
@@ -1089,7 +1089,7 @@ internal sealed class FirstStartTutorialWindow : Window
 		using (M3Card.Begin("tutorial_overlay_teaching", "Teaching mode", FontAwesomeIcon.GraduationCap))
 		{
 			DrawSwitch("tutorial_teaching_mode", "Highlight the next action on your hotbars",
-				"Lights up the button RSR wants next. Pair it with Target Only mode, where RSR picks targets and you press the buttons, to learn a rotation hands-on.",
+				"Lights up the button BRR wants next. Pair it with Target Only mode, where BRR picks targets and you press the buttons, to learn a rotation hands-on.",
 				Service.Config.TeachingMode);
 		}
 
@@ -1100,26 +1100,26 @@ internal sealed class FirstStartTutorialWindow : Window
 	{
 		DrawInfoCard("tutorial_lists", "List", FontAwesomeIcon.ListUl,
 			"Statuses: which debuffs to cleanse, which buffs make an enemy invincible or a priority, when not to start a cast, and more.",
-			"Actions: known raidwides, tankbusters and knockbacks that RSR prepares mitigation for.",
+			"Actions: known raidwides, tankbusters and knockbacks that BRR prepares mitigation for.",
 			"Territories: settings for particular areas.",
 			"The lists come curated and are updated with the plugin. Add your own entries with the + buttons.");
 
 		DrawInfoCard("tutorial_duty", "Duty", FontAwesomeIcon.Shield,
 			"One section per kind of content, from Ultimate and Savage to deep dungeons, PvP and the Masked Carnivale, each with fight-specific switches. Most can stay as they are.",
 			"In Occult Crescent, Variant dungeons, Bozja and a few other duties, a page for that content's own actions appears in the page list.",
-			"The AutoDuty page has the settings and status for running RSR alongside AutoDuty.");
+			"The AutoDuty page has the settings and status for running BRR alongside AutoDuty.");
 	}
 
 	private static void DrawAdvancedStep()
 	{
 		DrawInfoCard("tutorial_basic", "Basic", FontAwesomeIcon.Stopwatch,
-			"Action Ahead: how early in the GCD RSR queues the next action. The default suits almost everyone.",
-			"Minimum updating time: how often RSR re-evaluates the fight. Raise it a little if you see frame drops; lower is more responsive.",
+			"Action Ahead: how early in the GCD BRR queues the next action. The default suits almost everyone.",
+			"Minimum updating time: how often BRR re-evaluates the fight. Raise it a little if you see frame drops; lower is more responsive.",
 			"Other shared settings, such as making /rotation Auto a simple on/off toggle.");
 
 		DrawInfoCard("tutorial_extra", "Extra", FontAwesomeIcon.PuzzlePiece,
 			"Events: run your own macros when a duty starts or ends, or when a particular action is used.",
-			"Internal: back up and restore your RSR settings.",
+			"Internal: back up and restore your BRR settings.",
 			"Other: animation-lock and cooldown-delay tweaks, for players not already using Boss Mod Reborn for them.");
 
 		DrawInfoCard("tutorial_debug", "Debug", FontAwesomeIcon.Bug,
@@ -1175,10 +1175,10 @@ internal sealed class FirstStartTutorialWindow : Window
 			RotationSolverPlugin.OpenChangelog();
 		}
 
-		if (M3SettingRow.NavigationRow("##tutorial_finish_discord", "Get help on Discord",
+		if (M3SettingRow.NavigationRow("##tutorial_finish_issues", "Get help on GitHub",
 			"Questions, bug reports and rotation feedback.", FontAwesomeIcon.Comments, FontAwesomeIcon.ExternalLinkAlt))
 		{
-			OpenLink(DiscordUrl);
+			OpenLink(IssuesUrl);
 		}
 
 		Gap(8f);
@@ -1420,7 +1420,7 @@ internal sealed class FirstStartTutorialWindow : Window
 	{
 		var value = Service.Config.UiTextScale;
 		if (DrawPercentRow("##tutorial_text_scale", "Text size",
-			"Scales the text in every RSR window, on top of Dalamud's own font settings.",
+			"Scales the text in every BRR window, on top of Dalamud's own font settings.",
 			ref value, 0.75f, 1.75f))
 		{
 			Service.Config.UiTextScale = MathF.Round(value, 2);
@@ -1431,7 +1431,7 @@ internal sealed class FirstStartTutorialWindow : Window
 	{
 		var value = Service.Config.UiElementScale;
 		if (DrawPercentRow("##tutorial_element_scale", "Element size",
-			"Scales the padding, spacing and controls in every RSR window. Turn it down for a more compact layout.",
+			"Scales the padding, spacing and controls in every BRR window. Turn it down for a more compact layout.",
 			ref value, 0.75f, 1.75f))
 		{
 			Service.Config.UiElementScale = MathF.Round(value, 2);
@@ -1452,7 +1452,7 @@ internal sealed class FirstStartTutorialWindow : Window
 	private static void DrawPracticeSettings()
 	{
 		using var card = M3Card.Begin("tutorial_practice", "Try it here", FontAwesomeIcon.Flask,
-			subtitle: "Practice settings. They behave like the real ones, but change nothing in RSR.");
+			subtitle: "Practice settings. They behave like the real ones, but change nothing in BRR.");
 
 		var toggle = M3SettingRow.Begin("Practice toggle", "Right-click this row to see its chat command.", M3Widgets.SwitchSize());
 		_ = M3Widgets.Switch("##tutorial_practice_toggle", ref _practiceToggle);

@@ -40,6 +40,9 @@ public sealed unsafe class ActionManagerEx : IDisposable
 	private readonly Hook<UseActionLocationDelegate>? _useActionLocationHook;
 	private readonly Hook<ReceiveActionEffectDelegate>? _receiveActionEffectHook;
 
+	// Raised only when a real request went out, not when UseAction merely queued or rejected it.
+	internal static event System.Action<ActionType, uint, ulong, ushort>? ActionIssued;
+
 	private ActionManagerEx()
 	{
 		try
@@ -106,6 +109,7 @@ public sealed unsafe class ActionManagerEx : IDisposable
 
 		try
 		{
+			ActionIssued?.Invoke(actionType, actionId, targetId, self->LastUsedActionSequence);
 			var adjustment = CooldownDelayTweak.Adjustment;
 			if (adjustment > 0)
 			{

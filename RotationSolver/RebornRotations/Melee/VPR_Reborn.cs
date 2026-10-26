@@ -32,8 +32,17 @@ public sealed class VPR_Reborn : ViperRotation
 	[RotationConfig(CombatType.PvE, Name = "How long has to pass on Serpents Ire's cooldown before the rotation starts pooling gauge for burst. Leave this alone if you dont know what youre doing. (Will still use Reawaken if you reach cap regardless of timer)")]
 	public int ReawakenDelayTimer { get; set; } = 75;
 
-	[RotationConfig(CombatType.PvE, Name = "Experimental Pot Usage(used up to 5 seconds before SerpentsIre comes off cooldown)")]
+	[RotationConfig(CombatType.PvE, Name = "Use potion in the even-minute double Reawaken (after the GCD that follows Serpent's Ire)")]
 	public bool BurstMed { get; set; } = false;
+
+	[RotationConfig(CombatType.PvE, Name = "Use potion in the opener (weaved after Vicewinder, never pre-pull)")]
+	public bool OpenerPotion { get; set; } = false;
+
+	[RotationConfig(CombatType.PvE, Name = "Standard Double Reawaken: one dual wield GCD between Serpent's Ire and the first Reawaken (off = Reawaken right after Ire)")]
+	public bool StandardDoubleReawaken { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "Only use dual wield combos in the last 10 seconds before Serpent's Ire (hold Vicewinder/Vicepit for after the burst)")]
+	public bool HoldTwinbladeBeforeIre { get; set; } = true;
 
 	[RotationConfig(CombatType.PvE, Name = "Restrict GCD use if Serpent's Tail, Twinblood, or Twinfang oGCDs can be used")]
 	public bool AbilityPrio2 { get; set; } = true;
@@ -48,7 +57,69 @@ public sealed class VPR_Reborn : ViperRotation
 	{
 		ImGui.Text($"No Last Combo Action: {IsNoActionCombo()}");
 		ImGui.Text($"Locked Coil Choice: {(_coilChoice == 1 ? "Hunter's Coil" : _coilChoice == 2 ? "Swiftskin's Coil" : "None")}");
+		ImGui.Text($"Waiting For Ire Filler GCD: {WaitingForIreFiller}");
+		ImGui.Text($"Holding Twinblade For Burst: {HoldTwinblade}");
 	}
+
+	// Standard Double Reawaken (The Balance): Serpent's Ire, one more GCD, then both Reawakens back to back,
+	// so the second Ouroboros still lands in party buffs.
+	private bool WaitingForIreFiller
+	{
+		get
+		{
+			if (!StandardDoubleReawaken || !HasReadyToReawaken)
+			{
+				return false;
+			}
+
+			// Newest first: Ire before any GCD means no GCD has been used since Ire.
+			foreach (var rec in RecordActions)
+			{
+				if (rec.Action.RowId == (uint)ActionID.SerpentsIrePvE)
+				{
+					return true;
+				}
+
+				if (rec.Action.ActionCategory.RowId is 2 or 3)
+				{
+					return false;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	// About 10s before Ire, only dual wield combos: a twinblade combo there would delay the double Reawaken,
+	// and Reawaken breaks an unfinished one.
+	private bool HoldTwinblade
+	{
+		get
+		{
+			if (!HoldTwinbladeBeforeIre || !IsBurst || !SerpentsIrePvE.EnoughLevel || !SerpentsLineageTrait.EnoughLevel
+				|| !HasHunterAndSwift || SwiftTime <= SwiftTimer || HuntersTime <= HuntersTimer)
+			{
+				return false;
+			}
+
+			if (HasReadyToReawaken)
+			{
+				return true;
+			}
+
+			if (!SerpentsIrePvE.Cooldown.WillHaveOneCharge(10))
+			{
+				return false;
+			}
+
+			// At full charges holding wastes recharge time, so still fit a combo that finishes before Ire.
+			var charges = VicewinderPvE.Cooldown;
+			return charges.CurrentCharges < charges.MaxCharges || SerpentsIrePvE.Cooldown.WillHaveOneCharge(GCDTime(3));
+		}
+	}
+
+	private static bool DualWieldComboSafe => LiveComboTime > GCDTime(6) || IsNoActionCombo()
+		|| IsLastComboAction(ActionID.FlankstingStrikePvE, ActionID.FlanksbaneFangPvE, ActionID.HindstingStrikePvE, ActionID.HindsbaneFangPvE, ActionID.JaggedMawPvE, ActionID.BloodiedMawPvE);
 	#endregion
 
 	#region Additional oGCD Logic
@@ -187,6 +258,19 @@ public sealed class VPR_Reborn : ViperRotation
 				break;
 		}
 
+		// Opener potion after Vicewinder (Icy Veins opener); no pre-pull potion.
+		if (IsBurst && OpenerPotion && InCombat && CombatTime < 20 && DreadActive && UseBurstMedicine(out act))
+		{
+			return true;
+		}
+
+		// Even-minute potion in the weave after the Ire filler GCD, ahead of Death Rattle so it is buffed too.
+		if (IsBurst && BurstMed && HasReadyToReawaken && !WaitingForIreFiller && SerpentOffering >= 50
+			&& UseBurstMedicine(out act))
+		{
+			return true;
+		}
+
 		////Serpent Combo oGCDs
 		if (LastLashPvE.CanUse(out act))
 		{
@@ -194,13 +278,6 @@ public sealed class VPR_Reborn : ViperRotation
 		}
 
 		if (DeathRattlePvE.CanUse(out act))
-		{
-			return true;
-		}
-
-		// Use burst medicine if cooldown for Serpents Ire has elapsed sufficiently
-		if (NoAbilityReady && BurstMed && SerpentsIrePvE.EnoughLevel && SerpentsIrePvE.Cooldown.ElapsedAfter(115)
-			&& UseBurstMedicine(out act))
 		{
 			return true;
 		}
@@ -237,7 +314,7 @@ public sealed class VPR_Reborn : ViperRotation
 	[RotationDesc]
 	protected sealed override bool DefenseAreaAbility(IAction nextGCD, out IAction? act)
 	{
-		if (NoAbilityReady && FeintPvE.CanUse(out act))
+		if (FeintPvE.CanUse(out act))
 		{
 			return true;
 		}
@@ -248,7 +325,7 @@ public sealed class VPR_Reborn : ViperRotation
 	[RotationDesc]
 	protected sealed override bool AntiKnockbackAbility(IAction nextGCD, out IAction? act)
 	{
-		if (NoAbilityReady && ArmsLengthPvE.CanUse(out act))
+		if (ArmsLengthPvE.CanUse(out act))
 		{
 			return true;
 		}
@@ -341,7 +418,7 @@ public sealed class VPR_Reborn : ViperRotation
 		}
 
 		// Check if player meets Serpents Ire requirements, then check buff timers.
-		if (LiveComboTime > GCDTime(6) && ((SerpentsIrePvE.EnoughLevel && (!SerpentsIrePvE.Cooldown.ElapsedAfter(ReawakenDelayTimer) || SerpentOffering == 100)) || !SerpentsIrePvE.EnoughLevel)
+		if (!WaitingForIreFiller && DualWieldComboSafe && ((SerpentsIrePvE.EnoughLevel && (!SerpentsIrePvE.Cooldown.ElapsedAfter(ReawakenDelayTimer) || SerpentOffering == 100)) || !SerpentsIrePvE.EnoughLevel)
 			&& SwiftTime > SwiftTimer && HuntersTime > HuntersTimer)
 		{
 			// If all above conditions are met, attempt to use Reawaken.
@@ -471,7 +548,7 @@ public sealed class VPR_Reborn : ViperRotation
 			}
 		}
 
-		if (LiveComboTime > GCDTime(3) && IsSwift && VicepitPvE.Cooldown.CurrentCharges > 0)
+		if (LiveComboTime > GCDTime(3) && IsSwift && !HoldTwinblade && VicepitPvE.Cooldown.CurrentCharges > 0)
 		{
 			if (VicepitPvE.Cooldown.CurrentCharges == 1 && VicepitPvE.Cooldown.RecastTimeRemainOneCharge < 10)
 			{
@@ -788,7 +865,7 @@ public sealed class VPR_Reborn : ViperRotation
 			}
 		}
 
-		if (LiveComboTime > GCDTime(3) && IsSwift)
+		if (LiveComboTime > GCDTime(3) && IsSwift && !HoldTwinblade)
 		{
 			if (VicewinderPvE.Cooldown.CurrentCharges == 1 && VicewinderPvE.Cooldown.RecastTimeRemainOneCharge < 10)
 			{

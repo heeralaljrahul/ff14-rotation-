@@ -22,7 +22,7 @@ internal class EasterEggWindow : Window
 	private bool _aiBlunderThisGame = false;
 	private bool _aiBlunderUsed = false;
 
-	public EasterEggWindow() : base("RSR Lab — Tic‑tac‑toe", BaseFlags)
+	public EasterEggWindow() : base("BRR Lab — Tic‑tac‑toe", BaseFlags)
 	{
 		Size = new Vector2(300, 360);
 		SizeCondition = ImGuiCond.FirstUseEver;
@@ -170,7 +170,7 @@ internal class EasterEggWindow : Window
 			if (CheckWin(_board, Cell.O))
 			{
 				_gameOver = true;
-				_status = "RSR wins!";
+				_status = "BRR wins!";
 			}
 			else if (IsDraw(_board))
 			{

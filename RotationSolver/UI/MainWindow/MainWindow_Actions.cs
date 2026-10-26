@@ -15,7 +15,7 @@ public partial class MainWindow
 	{
 		DrawPageIntro(UiString.ConfigWindow_Actions_Description.GetDescription());
 
-		using var table = ImRaii.Table("Rotation Solver Actions", 2, ImGuiTableFlags.Resizable);
+		using var table = ImRaii.Table("BunnyRotationReborn Actions", 2, ImGuiTableFlags.Resizable);
 
 		if (table)
 		{

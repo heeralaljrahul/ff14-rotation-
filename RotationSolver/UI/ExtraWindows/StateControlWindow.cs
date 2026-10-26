@@ -73,7 +73,7 @@ internal class StateControlWindow : Window
 	private float _minimumWidth;
 
 	public StateControlWindow()
-		: base("RSR Autorotation###rsrStateControlWindow", BaseFlags)
+		: base("BRR Autorotation###rsrStateControlWindow", BaseFlags)
 	{
 		Size = DefaultSize;
 		SizeCondition = ImGuiCond.FirstUseEver;
@@ -85,7 +85,7 @@ internal class StateControlWindow : Window
 
 	internal bool IsMinimized => _fold.IsMinimized;
 
-	private static M3WindowBrand Brand => new(MainWindow.GetLogoTexture(), "RSR Autorotation");
+	private static M3WindowBrand Brand => new(MainWindow.GetLogoTexture(), "BRR Autorotation");
 
 	private static float TabPadding => 4f * M3.Scale;
 
@@ -323,7 +323,7 @@ internal class StateControlWindow : Window
 		else
 		{
 			drawList.AddRectFilled(logoMin, logoMax, M3.U32(s.PrimaryContainer), M3.ShapeSmall);
-			M3Draw.IconCentered(drawList, FontAwesomeIcon.Fire, logoMin, logoMax, s.OnPrimaryContainer);
+			M3Draw.IconCentered(drawList, FontAwesomeIcon.Carrot, logoMin, logoMax, s.OnPrimaryContainer);
 		}
 
 		var textX = logoMax.X + logoGap;

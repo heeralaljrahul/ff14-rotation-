@@ -72,7 +72,7 @@ public sealed class RPR_Reborn : ReaperRotation
 	[RotationDesc(ActionID.FeintPvE)]
 	protected override bool DefenseAreaAbility(IAction nextGCD, out IAction? act)
 	{
-		if (NotInActiveCombo && FeintPvE.CanUse(out act))
+		if (FeintPvE.CanUse(out act))
 		{
 			return true;
 		}
@@ -83,7 +83,7 @@ public sealed class RPR_Reborn : ReaperRotation
 	[RotationDesc(ActionID.ArcaneCrestPvE)]
 	protected override bool DefenseSingleAbility(IAction nextGCD, out IAction? act)
 	{
-		if (NotInActiveCombo && ArcaneCrestPvE.CanUse(out act))
+		if (ArcaneCrestPvE.CanUse(out act))
 		{
 			return true;
 		}
@@ -94,7 +94,7 @@ public sealed class RPR_Reborn : ReaperRotation
 	[RotationDesc(ActionID.ArmsLengthPvE)]
 	protected sealed override bool AntiKnockbackAbility(IAction nextGCD, out IAction? act)
 	{
-		if (NotInActiveCombo && ArmsLengthPvE.CanUse(out act))
+		if (ArmsLengthPvE.CanUse(out act))
 		{
 			return true;
 		}

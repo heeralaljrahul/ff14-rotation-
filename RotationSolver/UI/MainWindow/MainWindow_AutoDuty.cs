@@ -13,7 +13,7 @@ public partial class MainWindow
 		var scheme = M3.Scheme;
 
 		_ = M3Widgets.Banner("##autoduty_notice",
-			"While the RSR team has made an effort to keep RSR compatible with AutoDuty, RSR is not designed with botting in mind.",
+			"While effort has been made to keep BRR compatible with AutoDuty, BRR is not designed with botting in mind.",
 			M3Severity.Warning, FontAwesomeIcon.Robot);
 
 		ImGui.Dummy(new Vector2(0f, M3.Space2));
@@ -73,7 +73,7 @@ public partial class MainWindow
 			else if (plugin.Name == "Boss Mod" && isBossModEnabled)
 			{
 				accent = scheme.Warning;
-				advice = "Please use BossModReborn instead. BMR has specific integration with RSR that improves its ability to react to combat, for example gaze effects.";
+				advice = "Please use BossModReborn instead. BMR has specific integration with BRR that improves its ability to react to combat, for example gaze effects.";
 			}
 			else
 			{

@@ -25,6 +25,12 @@ internal static class CancelCastUpdater
 			return;
 		}
 
+		// A player-requested heal/cast is theirs to finish or cancel, regardless of automatic heal thresholds.
+		if (ActionQueueManager.OwnsManualCast(player.CastActionId))
+		{
+			return;
+		}
+
 		var castTarget = Svc.Objects.SearchById(player.CastTargetObjectId) as IBattleChara;
 
 		var tarDead = Service.Config.UseStopCasting

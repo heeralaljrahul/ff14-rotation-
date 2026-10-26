@@ -138,19 +138,19 @@ public sealed class DRK_Reborn : DarkKnightRotation
 			}
 		}
 
-		if (!InTwoMIsBurst && DarkMissionaryPvE.CanUse(out act))
+		if (DarkMissionaryPvE.CanUse(out act))
 		{
 			return true;
 		}
 
-		if (!InTwoMIsBurst && ReprisalPvE.CanUse(out act, skipAoeCheck: true))
+		if (ReprisalPvE.CanUse(out act, skipAoeCheck: true))
 		{
 			return true;
 		}
 
 		if (!IsLastAbility(false, OblationPvE))
 		{
-			if (!InTwoMIsBurst && OblationPvE.CanUse(out act, skipStatusProvideCheck: false, targetOverride: TargetType.Self))
+			if (OblationPvE.CanUse(out act, skipStatusProvideCheck: false, targetOverride: TargetType.Self))
 			{
 				return true;
 			}

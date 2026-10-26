@@ -116,7 +116,7 @@ internal class FullControlWindow : FullCtrlWindow
 	private static float SpecialGcdSize => SpecialGcdBaseSize * Service.Config.ControlWindowSpecialsScale;
 	private static float SpecialAbilitySize => SpecialAbilityBaseSize * Service.Config.ControlWindowSpecialsScale;
 
-	private static M3WindowBrand Brand => new(MainWindow.GetLogoTexture(), "RSR Control");
+	private static M3WindowBrand Brand => new(MainWindow.GetLogoTexture(), "BRR Control");
 
 	private readonly M3WindowAction[] _actions = new M3WindowAction[3];
 	private readonly M3WindowFold _fold = new();

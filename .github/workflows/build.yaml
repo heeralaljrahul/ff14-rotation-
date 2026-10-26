@@ -27,3 +27,6 @@ jobs:
 
       - name: Build Plugin
         run: dotnet build --no-restore -c Release RotationSolver/RotationSolver.csproj
+
+      - name: Check manual input and countdown regressions
+        run: dotnet run --project Tests/CombatPolicyRegression/CombatPolicyRegression.csproj -c Release

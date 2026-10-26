@@ -303,32 +303,28 @@ internal static class DataCenter
 		return Svc.GameConfig.UiControl.GetUInt(UiControlOption.MoveMode.ToString());
 	}
 
-	private static int _hostileTargetIndex = -1;
+	private static IBattleChara? _hostileTarget;
+	private static long _hostileTargetTick = long.MinValue;
 
-	// Never hold the object itself: Dalamud reuses one wrapper per table slot, and a held one keeps pointing at freed
-	// memory once the target despawns. The slot is remembered so the usual read is O(1), but it is re-read every time.
+	// Rotations read this many times per decision, so the live object is looked up once per frame.
 	internal static IBattleChara? HostileTarget
 	{
 		get
 		{
-			if (_hostileTargetId == 0)
+			var now = Environment.TickCount64;
+			if (_hostileTargetTick == long.MinValue || now - _hostileTargetTick >= 15)
 			{
-				return null;
+				_hostileTarget = _hostileTargetId == 0 ? null : Svc.Objects.SearchById(_hostileTargetId) as IBattleChara;
+				_hostileTargetTick = now;
 			}
 
-			if (_hostileTargetIndex >= 0 && Svc.Objects[_hostileTargetIndex] is IBattleChara inSlot && inSlot.GameObjectId == _hostileTargetId)
-			{
-				return inSlot;
-			}
-
-			var target = Svc.Objects.SearchById(_hostileTargetId) as IBattleChara;
-			_hostileTargetIndex = target?.ObjectIndex ?? -1;
-			return target;
+			return _hostileTarget;
 		}
 		set
 		{
 			_hostileTargetId = value?.GameObjectId ?? 0;
-			_hostileTargetIndex = -1;
+			_hostileTarget = value;
+			_hostileTargetTick = Environment.TickCount64;
 		}
 	}
 
@@ -436,6 +432,18 @@ internal static class DataCenter
 		}
 
 		return null;
+	}
+
+	/// <summary>The last action the player pressed themselves (not one BRR used), by adjusted ID.</summary>
+	internal static uint LastManualActionId { get; private set; }
+
+	/// <summary>When <see cref="LastManualActionId"/> was pressed.</summary>
+	internal static DateTime LastManualActionTime { get; private set; } = DateTime.MinValue;
+
+	internal static void RecordManualAction(uint adjustedId)
+	{
+		LastManualActionId = adjustedId;
+		LastManualActionTime = DateTime.Now;
 	}
 
 	internal static void AddCommandAction(IAction act, double time, CommandTarget? target = null)

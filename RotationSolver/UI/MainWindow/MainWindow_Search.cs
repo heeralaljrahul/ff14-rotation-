@@ -12,7 +12,7 @@ public partial class MainWindow
 
 	private void SearchingBox(float width)
 	{
-		if (M3Widgets.SearchField("##Rotation Solver Reborn Search Box",
+		if (M3Widgets.SearchField("##BunnyRotationReborn Search Box",
 			UiString.ConfigWindow_Searching.GetDescription(), ref _searchText, width, busy: _searchResults is { Length: > 0 }))
 		{
 			_searchResults = _allSearchable.SearchItems(_searchText);

@@ -9,7 +9,9 @@ using ECommons.Logging;
 using ECommons.Reflection;
 using RebornMaterial;
 using RotationSolver.Basic.Configuration;
+using RotationSolver.Commands;
 using RotationSolver.Data;
+using RotationSolver.UI.ExtraWindows;
 
 namespace RotationSolver.UI;
 
@@ -219,12 +221,21 @@ public partial class MainWindow : Window
 		}
 
 		M3Draw.VerticalGradient(drawList, new Vector2(min.X, min.Y + rounding), max, top, M3.Alpha(scheme.Surface, 0f));
+
+		if (BunnyTheme.Enabled)
+		{
+			// Thin gold edge with a soft glow, like the halo in the artwork.
+			var inset = new Vector2(1f * Scale);
+			drawList.AddRect(windowPos + inset, windowPos + windowSize - inset, M3.U32(BunnyTheme.Gold, 0.30f), rounding, ImDrawFlags.None, 1.5f * Scale);
+			drawList.AddRect(windowPos + (inset * 3f), windowPos + windowSize - (inset * 3f), M3.U32(BunnyTheme.Gold, 0.07f), rounding, ImDrawFlags.None, 3f * Scale);
+		}
+
 		drawList.PopClipRect();
 	}
 
 	private void DrawResetDialog()
 	{
-		const string title = "Reset RSR Plugin Settings";
+		const string title = "Reset BRR Plugin Settings";
 
 		if (_showResetPopup)
 		{
@@ -250,8 +261,8 @@ public partial class MainWindow : Window
 		using (ImRaii.PushColor(ImGuiCol.Text, M3.Scheme.OnSurfaceVariant))
 		{
 			ImGui.TextWrapped(CNLanguageClient
-				? "如果你在使用旧版默认配置的 RSR 时遇到问题，通常推荐执行此操作。此操作无法撤销。"
-				: "This is often recommended for users having issues while using an installation of RSR with an outdated default configuration. This cannot be undone.");
+				? "如果你在使用旧版默认配置的 BRR 时遇到问题，通常推荐执行此操作。此操作无法撤销。"
+				: "This is often recommended for users having issues while using an installation of BRR with an outdated default configuration. This cannot be undone.");
 		}
 
 		ImGui.Dummy(new Vector2(0f, M3.Space3));
@@ -282,6 +293,186 @@ public partial class MainWindow : Window
 
 	private void DrawTopAppBar()
 	{
+		if (BunnyTheme.Enabled)
+		{
+			DrawBunnyHeader();
+			return;
+		}
+
+		DrawMaterialAppBar();
+	}
+
+	private bool IsHomeTab => _activeTab is MainWindowTab.Main or MainWindowTab.About;
+
+	/// <summary>
+	/// The Bunny header: the artwork faded into plum with twinkling sparkles, the page title in the display font,
+	/// and on Home the autorotation state switch.
+	/// </summary>
+	private void DrawBunnyHeader()
+	{
+		var scheme = M3.Scheme;
+		var searching = _searchResults is { Length: > 0 };
+		var home = IsHomeTab && !searching;
+		var title = searching
+			? UiString.ConfigWindow_Search_Result.GetDescription()
+			: home ? "Ready to burst, bunny" : GetActiveTabTitle();
+		var subtitle = searching
+			? string.Format("{0} matching settings", _searchResults!.Length)
+			: home ? HomeSubtitle() : _activeTab.GetDescription();
+		var eyebrow = home ? "Welcome back" : "BunnyRotationReborn";
+
+		var width = MathF.Max(64f * Scale, ImGui.GetContentRegionAvail().X);
+		var brand = Brand;
+		var shown = _windowActions.Length;
+		while (shown > 0 && M3Widgets.WindowActionsSize(shown, brand, 0f).X + (160f * Scale) > width)
+		{
+			shown--;
+		}
+
+		var barSize = M3Widgets.WindowActionsSize(shown, brand, 0f);
+		var height = (home ? 206f : 112f) * Scale;
+
+		ImGui.Dummy(new Vector2(width, height));
+		var min = ImGui.GetItemRectMin();
+		var max = ImGui.GetItemRectMax();
+		var drawList = ImGui.GetWindowDrawList();
+
+		BunnyTheme.ArtHeader(drawList, min, max, UpdateNotesWindow.GetBanner(), home ? 0.3f : 0.22f, home ? 1f : 0.6f, M3.ShapeMedium);
+		BunnyTheme.Twinkles(drawList, min, max);
+
+		var pad = 22f * Scale;
+		var textWidth = MathF.Max(32f * Scale, width - barSize.X - (pad * 2f));
+		var y = min.Y + (home ? 26f * Scale : 16f * Scale);
+
+		BunnyTheme.Eyebrow(drawList, new Vector2(min.X + pad, y), eyebrow, scheme.Primary);
+		var eyebrowSize = BunnyTheme.EyebrowSize(eyebrow);
+		var pillSize = M3Widgets.PillSize(BunnyTheme.VersionLabel, FontAwesomeIcon.Tag);
+		ImGui.SetCursorScreenPos(new Vector2(min.X + pad + eyebrowSize.X + M3.Space2, y + ((eyebrowSize.Y - pillSize.Y) * 0.5f)));
+		BunnyTheme.VersionPill("##bunny_header_version");
+		y += MathF.Max(eyebrowSize.Y, pillSize.Y * 0.5f + (eyebrowSize.Y * 0.5f)) + (4f * Scale);
+
+		var display = BunnyTheme.PushDisplay(home);
+		using (display)
+		using (ImRaii.PushFont(M3.HeadlineSmall, display == null))
+		{
+			var clipped = M3Navigation.Truncate(title, textWidth);
+			var titleSize = ImGui.CalcTextSize(clipped);
+			drawList.AddText(new Vector2(min.X + pad + 1f, y + 1f), M3.U32(BunnyTheme.Gold, 0.25f), clipped);
+			drawList.AddText(new Vector2(min.X + pad, y), M3.U32(scheme.OnSurface, 0.98f), clipped);
+			y += titleSize.Y + (4f * Scale);
+		}
+
+		if (!string.IsNullOrEmpty(subtitle))
+		{
+			using var font = ImRaii.PushFont(M3.LabelSmall);
+			drawList.AddText(new Vector2(min.X + pad, y), M3.U32(scheme.OnSurfaceVariant, 0.95f), M3Navigation.Truncate(subtitle, textWidth));
+		}
+
+		_shownActions = shown;
+		_fold.BarTop = 10f * Scale;
+
+		if (home)
+		{
+			DrawStateSwitch(new Vector2(min.X + pad, max.Y - (52f * Scale)));
+		}
+
+		if (searching)
+		{
+			ImGui.SetCursorScreenPos(new Vector2(max.X - M3Widgets.IconButtonSize - pad, max.Y - M3Widgets.IconButtonSize - (12f * Scale)));
+			if (M3Widgets.IconButton("##appbar_clear_search", FontAwesomeIcon.Eraser, "Clear search results"))
+			{
+				_searchText = string.Empty;
+				_searchResults = [];
+			}
+		}
+
+		ImGui.SetCursorScreenPos(new Vector2(min.X, max.Y));
+		ImGui.Dummy(new Vector2(width, M3.Space2));
+	}
+
+	private static string HomeSubtitle()
+	{
+		var territory = DataCenter.Territory?.ContentFinderName;
+		var rotation = DataCenter.CurrentRotation?.Name;
+		var place = string.IsNullOrEmpty(territory) ? "Out in the world" : territory;
+		return string.IsNullOrEmpty(rotation) ? place : $"{place} · {rotation}";
+	}
+
+	private static readonly (StateCommandType State, string Label)[] _headerStates =
+	[
+		(StateCommandType.Auto, "Auto"),
+		(StateCommandType.Manual, "Manual"),
+		(StateCommandType.TargetOnly, "Target only"),
+		(StateCommandType.Off, "Off"),
+	];
+
+	internal static StateCommandType CurrentState => !DataCenter.State
+		? StateCommandType.Off
+		: DataCenter.IsTargetOnly ? StateCommandType.TargetOnly
+		: DataCenter.IsManual ? StateCommandType.Manual
+		: StateCommandType.Auto;
+
+	/// <summary>Auto / Manual / Target only / Off, drawn as a glowing gold pill row on the header art.</summary>
+	private static void DrawStateSwitch(Vector2 position)
+	{
+		var drawList = ImGui.GetWindowDrawList();
+		var scale = Scale;
+		var segmentHeight = 32f * scale;
+		var inset = 4f * scale;
+		var current = CurrentState;
+
+		using var font = ImRaii.PushFont(M3.TitleMedium);
+		var widths = new float[_headerStates.Length];
+		var total = inset;
+		for (var i = 0; i < _headerStates.Length; i++)
+		{
+			widths[i] = ImGui.CalcTextSize(_headerStates[i].Label).X + (28f * scale);
+			total += widths[i] + inset;
+		}
+
+		var containerMax = position + new Vector2(total, segmentHeight + (inset * 2f));
+		drawList.AddRectFilled(position, containerMax, M3.U32(BunnyTheme.PlumLow, 0.88f), 14f * scale);
+		drawList.AddRect(position, containerMax, M3.U32(BunnyTheme.Gold, 0.32f), 14f * scale, ImDrawFlags.None, 1f * scale);
+
+		var x = position.X + inset;
+		for (var i = 0; i < _headerStates.Length; i++)
+		{
+			var (state, label) = _headerStates[i];
+			var segMin = new Vector2(x, position.Y + inset);
+			var segMax = segMin + new Vector2(widths[i], segmentHeight);
+			ImGui.SetCursorScreenPos(segMin);
+			if (ImGui.InvisibleButton($"##bunny_state_{state}", segMax - segMin))
+			{
+				RSCommands.DoStateCommandType(state);
+			}
+
+			var hovered = ImGui.IsItemHovered();
+			var active = state == current;
+			if (active)
+			{
+				BunnyTheme.GlowRect(drawList, segMin, segMax, 10f * scale);
+				drawList.AddRectFilled(segMin, segMax, M3.U32(BunnyTheme.Gold, 1f), 10f * scale);
+			}
+			else if (hovered)
+			{
+				drawList.AddRectFilled(segMin, segMax, M3.U32(BunnyTheme.Gold, 0.10f), 10f * scale);
+			}
+
+			if (hovered)
+			{
+				ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+			}
+
+			var textSize = ImGui.CalcTextSize(label);
+			drawList.AddText(segMin + ((segMax - segMin - textSize) * 0.5f),
+				active ? M3.U32(new Vector4(0.16f, 0.10f, 0.03f, 1f), 1f) : M3.U32(BunnyTheme.Text, 0.9f), label);
+			x = segMax.X + inset;
+		}
+	}
+
+	private void DrawMaterialAppBar()
+	{
+
 		var scheme = M3.Scheme;
 		var searching = _searchResults is { Length: > 0 };
 		var title = searching
@@ -386,7 +577,7 @@ public partial class MainWindow : Window
 
 	private void DrawBody()
 	{
-		using var child = ImRaii.Child("Rotation Solver Body", -Vector2.One, false,
+		using var child = ImRaii.Child("BunnyRotationReborn Body", -Vector2.One, false,
 			ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
 		if (!child)
 		{
@@ -395,7 +586,7 @@ public partial class MainWindow : Window
 
 		DrawTopAppBar();
 
-		using var page = ImRaii.Child("Rotation Solver Page", -Vector2.One);
+		using var page = ImRaii.Child("BunnyRotationReborn Page", -Vector2.One);
 		if (!page)
 		{
 			return;

@@ -39,9 +39,10 @@ public sealed class RotationSolverPlugin : IAsyncDalamudPlugin
 	private static EasterEggWindow? _easterEggWindow;
 	private static FirstStartTutorialWindow? _firstStartTutorialWindow;
 	private static UpdateNotesWindow? _updateNotesWindow;
+	private static UltimateSettingsWindow? _ultimateSettingsWindow;
 
 	private static readonly List<IDisposable> _dis = [];
-	public static string Name => "Rotation Solver Reborn";
+	public static string Name => "BunnyRotationReborn";
 	internal static readonly List<DrawingHighlightHotbarBase> _drawingElements = [];
 
 	public static DalamudLinkPayload OpenLinkPayload { get; private set; } = null!;
@@ -61,6 +62,7 @@ public sealed class RotationSolverPlugin : IAsyncDalamudPlugin
 		// RSR's 100% element size is a quarter smaller than the Material spec.
 		M3.ElementBaseline = 0.75f;
 		M3.Initialize(pluginInterface, Service.Config);
+		BunnyTheme.Initialize();
 		M3Tooltip.Handler = ImguiTooltips.ShowTooltip;
 
 		IconSet.Init();
@@ -82,6 +84,7 @@ public sealed class RotationSolverPlugin : IAsyncDalamudPlugin
 		_easterEggWindow = new();
 		_firstStartTutorialWindow = new();
 		_updateNotesWindow = new();
+		_ultimateSettingsWindow = new();
 
 		// Start cactbot bridge if enabled
 		//try
@@ -108,6 +111,7 @@ public sealed class RotationSolverPlugin : IAsyncDalamudPlugin
 		windowSystem.AddWindow(_easterEggWindow);
 		windowSystem.AddWindow(_firstStartTutorialWindow);
 		windowSystem.AddWindow(_updateNotesWindow);
+		windowSystem.AddWindow(_ultimateSettingsWindow);
 
 		//Notify.Success("Overlay Window was added!");
 
@@ -150,6 +154,29 @@ public sealed class RotationSolverPlugin : IAsyncDalamudPlugin
 		{
 			PluginLog.Warning($"Failed to load config: {ex.Message}");
 			Service.Config = new Configs();
+		}
+
+		// One-time switch to the Bunny theme: only replaces the accent if it is still the original crimson
+		// default, so a colour the player picked is kept.
+		if (!Service.Config.BunnyThemeApplied)
+		{
+			if (Vector4.Distance(Service.Config.UiAccentColor, Configs.OriginalAccentColor) < 0.01f)
+			{
+				Service.Config.UiAccentColor = Configs.DefaultAccentColor;
+			}
+
+			Service.Config.BunnyThemeApplied = true;
+		}
+
+		// One-time: teaching mode's original green highlight becomes Bunny Gold (a picked colour is kept).
+		if (Service.Config.BunnyThemeVersion < 2)
+		{
+			if (Vector4.Distance(Service.Config.TeachingModeColor, new Vector4(0f, 1f, 0f, 1f)) < 0.01f)
+			{
+				Service.Config.TeachingModeColor = Service.ConfigDefault.TeachingModeColor;
+			}
+
+			Service.Config.BunnyThemeVersion = 2;
 		}
 
 		// Load OtherConfiguration files
@@ -281,6 +308,7 @@ public sealed class RotationSolverPlugin : IAsyncDalamudPlugin
 		}
 
 		M3.BeginFrame();
+		BunnyTheme.BeginFrame();
 		windowSystem.Draw();
 	}
 
@@ -369,6 +397,17 @@ public sealed class RotationSolverPlugin : IAsyncDalamudPlugin
 	internal static void OpenChangelog()
 	{
 		_updateNotesWindow?.IsOpen = true;
+	}
+
+	internal static void OpenUltimateSettings()
+	{
+		if (_ultimateSettingsWindow == null)
+		{
+			return;
+		}
+
+		_ultimateSettingsWindow.IsOpen = true;
+		_ultimateSettingsWindow.BringToFront();
 	}
 
 	internal static void ShowChangelogIfUpdated()
@@ -471,6 +510,7 @@ public sealed class RotationSolverPlugin : IAsyncDalamudPlugin
 		HotbarDisabledColor.ResetOnUnload();
 		HotbarHighlightManager.Dispose();
 		ActionTimelineManager.DisposeInstance();
+		BunnyTheme.Dispose();
 		M3.Dispose();
 
 		BMRInfo_IPCSubscriber.Dispose();

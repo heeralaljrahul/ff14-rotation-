@@ -1,7 +1,14 @@
 {
   "categories": [
     {
-      "category": "Rotation Solver Reborn",
+      "category": "BunnyRotationReborn",
+      "icon": "Heart",
+      "items": [
+        { "name": "Bunny", "role": "Fork author", "url": "https://github.com/heeralaljrahul/RotationSolverReborn" }
+      ]
+    },
+    {
+      "category": "Original RotationSolverReborn",
       "icon": "Fire",
       "items": [
         { "name": "LTS", "role": "Lead developer", "url": "https://github.com/LTS-FFXIV" }

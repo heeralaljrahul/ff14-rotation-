@@ -24,8 +24,98 @@ public sealed class MCH_Reborn : MachinistRotation
 	[RotationConfig(CombatType.PvE, Name = "Restrict Tactician to only be allowed to be used when there are multiple hostile targets")]
 	private bool MultiTact { get; set; } = false;
 
+	[RotationConfig(CombatType.PvE, Name = "Prevent the use of defense abilities during burst")]
+	private bool BurstDefense { get; set; } = false;
+
 	[RotationConfig(CombatType.PvE, Name = "BMR: Dump Heat before downtime (Experimental)")]
 	public bool BmrDumpBeforeDowntime { get; set; } = true;
+	#endregion
+
+	#region Ultimate Settings
+	[RotationConfig(CombatType.PvE, Name = "Use per-ultimate settings", Tooltip = "Inside an ultimate, use the settings on that ultimate's tab instead of the defaults.", UltimateSection = true)]
+	public bool UseUltimateSettings { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "UCoB: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UCoB)]
+	public bool UcobOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "UCoB: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UCoB)]
+	public bool UcobHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "UCoB: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UCoB)]
+	public float UcobPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "UwU: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UwU)]
+	public bool UwuOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "UwU: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UwU)]
+	public bool UwuHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "UwU: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.UwU)]
+	public float UwuPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "TEA: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TEA)]
+	public bool TeaOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "TEA: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TEA)]
+	public bool TeaHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "TEA: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TEA)]
+	public float TeaPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "DSR: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DSR)]
+	public bool DsrOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "DSR: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DSR)]
+	public bool DsrHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "DSR: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DSR)]
+	public float DsrPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "TOP: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TOP)]
+	public bool TopOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "TOP: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TOP)]
+	public bool TopHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "TOP: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.TOP)]
+	public float TopPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "FRU: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.FRU)]
+	public bool FruOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "FRU: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.FRU)]
+	public bool FruHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "FRU: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.FRU)]
+	public float FruPartyAlignHold { get; set; } = 3;
+
+	[RotationConfig(CombatType.PvE, Name = "DMU: Use potion in the opener", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DMU)]
+	public bool DmuOpenerPotion { get; set; } = true;
+
+	[RotationConfig(CombatType.PvE, Name = "DMU: Hold 2-minute burst when downtime is imminent (needs BossMod Reborn)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DMU)]
+	public bool DmuHoldBurstForDowntime { get; set; } = true;
+
+	[Range(0, 10, ConfigUnitType.Seconds, 0.5f)]
+	[RotationConfig(CombatType.PvE, Name = "DMU: Max seconds to hold 2-minute burst for party raid buffs (0 = never hold)", Parent = nameof(UseUltimateSettings), Ultimate = UltimateRaid.DMU)]
+	public float DmuPartyAlignHold { get; set; } = 3;
+
+	private UltimateSettings Ultimate => !UseUltimateSettings ? UltimateSettings.Default : CurrentUltimate switch
+	{
+		UltimateRaid.UCoB => new(UcobOpenerPotion, UcobHoldBurstForDowntime, UcobPartyAlignHold),
+		UltimateRaid.UwU => new(UwuOpenerPotion, UwuHoldBurstForDowntime, UwuPartyAlignHold),
+		UltimateRaid.TEA => new(TeaOpenerPotion, TeaHoldBurstForDowntime, TeaPartyAlignHold),
+		UltimateRaid.DSR => new(DsrOpenerPotion, DsrHoldBurstForDowntime, DsrPartyAlignHold),
+		UltimateRaid.TOP => new(TopOpenerPotion, TopHoldBurstForDowntime, TopPartyAlignHold),
+		UltimateRaid.FRU => new(FruOpenerPotion, FruHoldBurstForDowntime, FruPartyAlignHold),
+		UltimateRaid.DMU => new(DmuOpenerPotion, DmuHoldBurstForDowntime, DmuPartyAlignHold),
+		_ => UltimateSettings.Default,
+	};
 	#endregion
 
 	#region Countdown logic
@@ -46,12 +136,8 @@ public sealed class MCH_Reborn : MachinistRotation
 			return act;
 		}
 
-		if (AirAnchorCountdown && IsBurst && OpenerBurstMeds && remainTime <= 1.5f && UseBurstMedicine(out act))
-		{
-			return act;
-		}
-
-		if (!AirAnchorCountdown && IsBurst && OpenerBurstMeds && remainTime <= 1f && UseBurstMedicine(out act))
+		// The Balance: an opener pot goes two seconds before the pull.
+		if (IsBurst && UseOpenerPotion && remainTime <= 2f && UseBurstMedicine(out act))
 		{
 			return act;
 		}
@@ -60,6 +146,42 @@ public sealed class MCH_Reborn : MachinistRotation
 	}
 	#endregion
 
+	private bool UseOpenerPotion => IsInUltimate && UseUltimateSettings ? Ultimate.OpenerPotion : OpenerBurstMeds;
+
+	private readonly BurstAligner _burstAligner = new();
+
+	/// <summary>
+	/// True when the 2-minute burst (Barrel Stabilizer + Wildfire) should be held: either downtime would eat
+	/// the Wildfire window, or the party's raid buffs haven't gone out yet.
+	/// </summary>
+	private bool HoldTwoMinuteBurst
+	{
+		get
+		{
+			if (!Service.Config.AutomaticBurstHolds)
+			{
+				return false;
+			}
+
+			// AutoBurst was turned back on (e.g. by a hold/release macro) and the burst hasn't gone out yet: go now.
+			if (BurstReleasePending(WildfirePvE))
+			{
+				return false;
+			}
+
+			var burstReady = (BarrelStabilizerPvE.EnoughLevel && !BarrelStabilizerPvE.Cooldown.IsCoolingDown)
+				|| (WildfirePvE.EnoughLevel && !WildfirePvE.Cooldown.IsCoolingDown);
+
+			if (_burstAligner.ShouldHold(burstReady, Ultimate.PartyAlignHold))
+			{
+				return true;
+			}
+
+			// Wildfire lasts 10s; give it room for the full Hypercharge window plus a GCD of slack.
+			return Ultimate.HoldBurstForDowntime && BMRDowntimeWithin(15f);
+		}
+	}
+
 	/// <summary>
 	/// True when Wildfire is coming soon (within 15s) and we should save Heat.
 	/// </summary>
@@ -67,6 +189,16 @@ public sealed class MCH_Reborn : MachinistRotation
 		&& WildfirePvE.Cooldown.IsCoolingDown
 		&& !WildfirePvE.Cooldown.HasOneCharge
 		&& WildfirePvE.Cooldown.RecastTimeRemain <= 15;
+
+	protected override void UpdateInfo()
+	{
+		// Selection is blocked before a pull, so reset pull-local state here rather than in an ability branch.
+		if (!InCombat || Service.CountDownTime > 0)
+		{
+			ResetQueenStep();
+		}
+		base.UpdateInfo();
+	}
 
 	protected override bool EmergencyAbility(IAction nextGCD, out IAction? act)
 	{
@@ -78,6 +210,12 @@ public sealed class MCH_Reborn : MachinistRotation
 		else
 		{
 			ResetQueenStep();
+		}
+
+		// No pre-pull: the opener potion goes in the first weave after the pull instead.
+		if (IsBurst && UseOpenerPotion && InPostPullPotionWindow() && UseBurstMedicine(out act))
+		{
+			return true;
 		}
 
 		if (HyperchargePvE.EnoughLevel)
@@ -96,7 +234,8 @@ public sealed class MCH_Reborn : MachinistRotation
 					return true;
 				}
 			}
-			if (HasWildfire && IsLastAction(false, FullMetalFieldPvE))
+			// Hypercharge into Wildfire once Full Metal Field is spent (or never came, when Barrel Stabilizer drifted).
+			if (HasWildfire && !HasFullMetalMachinist)
 			{
 				if (HyperchargePvE.CanUse(out act, skipTTKCheck: true))
 				{
@@ -108,11 +247,12 @@ public sealed class MCH_Reborn : MachinistRotation
 			// If downtime is imminent (<=15s) and we're not in Wildfire, spend Heat aggressively
 			// to avoid losing gauge value during the untargetable phase.
 			// Skip if we're already in pre-burst window (Wildfire coming soon and downtime is far).
-			if (BmrDumpBeforeDowntime && BMRDowntimeWithin(15f)
+			// Only when the five Blazing Shots still fit before the boss leaves, and no tool is about to come up.
+			if (BmrDumpBeforeDowntime && BMRDowntimeWithin(15f) && !BMRDowntimeWithin(8f)
 				&& !HasWildfire && !IsOverheated && (Heat >= 50 || HasHypercharged)
 				&& !IsPreBurst)
 			{
-				if (HyperchargePvE.CanUse(out act, skipTTKCheck: true))
+				if (ToolChargeSoon(out act))
 				{
 					return true;
 				}
@@ -126,7 +266,7 @@ public sealed class MCH_Reborn : MachinistRotation
 	[RotationDesc(ActionID.TacticianPvE, ActionID.DismantlePvE)]
 	protected override bool DefenseAreaAbility(IAction nextGCD, out IAction? act)
 	{
-		if (IsOverheated || HasWildfire || HasFullMetalMachinist || (WildfirePvE.EnoughLevel && WildfirePvE.Cooldown.HasOneCharge))
+		if (BurstDefense && (IsOverheated || HasWildfire || HasFullMetalMachinist))
 		{
 			return base.DefenseAreaAbility(nextGCD, out act);
 		}
@@ -160,13 +300,19 @@ public sealed class MCH_Reborn : MachinistRotation
 
 		// Reassemble Logic
 		// Check next GCD action and conditions for Reassemble.
+		// Reassemble goes under raid buffs where possible (The Balance): outside the 2-minute window, only spend a
+		// charge that would otherwise sit capped, so both charges are ready for the burst.
+		var inTwoMinuteWindow = HasWildfire
+			|| (WildfirePvE.EnoughLevel && WildfirePvE.Cooldown.WillHaveOneCharge(10))
+			|| HasOtherPartyRaidBuff;
 		var isReassembleUsable =
 			//Reassemble current # of charges and double proc protection
-			ReassemblePvE.Cooldown.CurrentCharges > 0 && !HasReassembled &&
+			ReassemblePvE.Cooldown.CurrentCharges > 0 && !HasReassembled
+			&& (inTwoMinuteWindow || !WildfirePvE.EnoughLevel || ReassemblePvE.Cooldown.CurrentCharges >= ReassemblePvE.Cooldown.MaxCharges) &&
 			(nextGCD.IsTheSameTo(true, [ChainSawPvE, ExcavatorPvE])
 			|| (!ChainSawPvE.EnoughLevel && nextGCD.IsTheSameTo(true, SpreadShotPvE) && ((IBaseAction)nextGCD).Target.AffectedTargets.Length >= (SpreadShotMasteryTrait.EnoughLevel ? 4 : 5))
 			|| nextGCD.IsTheSameTo(false, [AirAnchorPvE])
-			|| (!ChainSawPvE.EnoughLevel && nextGCD.IsTheSameTo(true, DrillPvE))
+			|| nextGCD.IsTheSameTo(true, DrillPvE)
 			|| (!DrillPvE.EnoughLevel && nextGCD.IsTheSameTo(true, CleanShotPvE))
 			|| (!CleanShotPvE.EnoughLevel && nextGCD.IsTheSameTo(false, HotShotPvE)));
 		// Attempt to use Reassemble if it's ready
@@ -202,9 +348,10 @@ public sealed class MCH_Reborn : MachinistRotation
 			}
 		}
 
-		if (IsBurst)
+		var holdBurst = HoldTwoMinuteBurst;
+		if (IsBurst && !holdBurst)
 		{
-			var bmrBlockBarrel = BMRDowntimeWithin(GCDTime(2));
+			var bmrBlockBarrel = BMRDowntimeWithin(GCDTime(2)) && !BurstJustReleased;
 			if (!bmrBlockBarrel && BarrelStabilizerPvE.CanUse(out act))
 			{
 				return true;
@@ -212,14 +359,30 @@ public sealed class MCH_Reborn : MachinistRotation
 		}
 
 		var LowLevelHyperCheck = !AutoCrossbowPvE.EnoughLevel && SpreadShotPvE.CanUse(out _);
-		var bmrBlockWildfire = BMRDowntimeWithin(10f);
-		if (IsBurst && !bmrBlockWildfire)
+		var bmrBlockWildfire = BMRDowntimeWithin(10f) && !BurstJustReleased;
+		if (IsBurst && !bmrBlockWildfire && !holdBurst)
 		{
 			if (FullMetalFieldPvE.EnoughLevel)
 			{
 				if (Heat >= 50 || HasHypercharged)
 				{
 					if (WeaponRemain < (GCDTime(1) / 2) && nextGCD.IsTheSameTo(false, FullMetalFieldPvE))
+					{
+						if (WildfirePvE.CanUse(out act))
+						{
+							if ((WildfirePvE.Target.Target.IsBossFromIcon() && WildfireBoss) || !WildfireBoss)
+							{
+								return true;
+							}
+						}
+					}
+
+					// Recovery when Barrel Stabilizer has drifted away from Wildfire, so no Full Metal Field is coming:
+					// pair Wildfire with a Hypercharge window instead (Hypercharge follows right after), which still
+					// lands six weaponskills. Only when no tool is about to come up (ToolChargeSoon).
+					if (WeaponRemain < (GCDTime(1) / 2) && !HasFullMetalMachinist && !IsOverheated
+						&& BarrelStabilizerPvE.Cooldown.IsCoolingDown && !BarrelStabilizerPvE.Cooldown.WillHaveOneCharge(10)
+						&& ToolChargeSoon(out _))
 					{
 						if (WildfirePvE.CanUse(out act))
 						{
@@ -272,26 +435,30 @@ public sealed class MCH_Reborn : MachinistRotation
 			_ => "GaussRound"
 		};
 
+		// Pool Double Check/Checkmate for raid buffs; spend freely in Wildfire/Overheat (Blazing Shot reduces their
+		// recast, so they'd overcap) or right before downtime. Outside that they are only used to avoid overcapping.
+		var spendGaussCharges = HasWildfire || IsOverheated || HasOtherPartyRaidBuff || BMRDowntimeWithin(10f);
+
 		if (!FullMetalFieldPvE.EnoughLevel || (FullMetalFieldPvE.EnoughLevel && !nextGCD.IsTheSameTo(false, FullMetalFieldPvE)))
 		{
 			switch (whichToUse)
 			{
 				case "Ricochet":
-					if (CheckmatePvE.EnoughLevel && CheckmatePvE.CanUse(out act, usedUp: IsBurst || IsOverheated))
+					if (CheckmatePvE.EnoughLevel && CheckmatePvE.CanUse(out act, usedUp: spendGaussCharges))
 					{
 						return true;
 					}
-					if (!CheckmatePvE.EnoughLevel && RicochetPvE.CanUse(out act, usedUp: IsBurst || IsOverheated))
+					if (!CheckmatePvE.EnoughLevel && RicochetPvE.CanUse(out act, usedUp: spendGaussCharges))
 					{
 						return true;
 					}
 					break;
 				case "GaussRound":
-					if (DoubleCheckPvE.EnoughLevel && DoubleCheckPvE.CanUse(out act, usedUp: IsBurst || IsOverheated))
+					if (DoubleCheckPvE.EnoughLevel && DoubleCheckPvE.CanUse(out act, usedUp: spendGaussCharges))
 					{
 						return true;
 					}
-					if (!DoubleCheckPvE.EnoughLevel && GaussRoundPvE.CanUse(out act, usedUp: IsBurst || IsOverheated))
+					if (!DoubleCheckPvE.EnoughLevel && GaussRoundPvE.CanUse(out act, usedUp: spendGaussCharges))
 					{
 						return true;
 					}
@@ -546,11 +713,15 @@ public sealed class MCH_Reborn : MachinistRotation
 		}
 	}
 
-	private bool _wasRobotActive = false;
+	// Steps 3-11 are one full cycle of the battery plan; later steps repeat it.
+	private const int QueenCycleStart = 3;
+	private const int QueenCycleLength = 9;
+
+	private bool _wasRobotActive;
 
 	public void UpdateQueenStep()
 	{
-		// Advance once per summon; LastSummonBatteryPower can repeat between pulls.
+		// Advance on every summon (the robot becoming active), including back-to-back summons at the same battery.
 		if (IsRobotActive && !_wasRobotActive)
 		{
 			AdvanceStep();
@@ -568,6 +739,27 @@ public sealed class MCH_Reborn : MachinistRotation
 	private void AdvanceStep()
 	{
 		_currentStep++;
+		if (_currentStep >= _stepPairs.Length)
+		{
+			_currentStep = QueenCycleStart + ((_currentStep - QueenCycleStart) % QueenCycleLength);
+		}
+
+		// Resync after deaths, downtime or fallback summons: jump to the next step that starts from the battery
+		// the last Queen actually used.
+		if (_stepPairs[_currentStep].from == LastSummonBatteryPower)
+		{
+			return;
+		}
+
+		for (var i = 0; i < QueenCycleLength; i++)
+		{
+			var index = QueenCycleStart + ((_currentStep - QueenCycleStart + i + QueenCycleLength) % QueenCycleLength);
+			if (_stepPairs[index].from == LastSummonBatteryPower)
+			{
+				_currentStep = index;
+				return;
+			}
+		}
 	}
 	private bool UseQueen(out IAction? act, IAction nextGCD)
 	{
@@ -591,8 +783,29 @@ public sealed class MCH_Reborn : MachinistRotation
 			}
 		}
 
+		// Queen hits are lost while the boss is untargetable, so don't start one that would run into downtime.
+		// Overcap protection below still applies.
+		// Queen lasts 12s and Rook 9s regardless of battery; allow a couple of seconds to deploy.
+		var queenIntoDowntime = Service.Config.AutomaticBurstHolds && Ultimate.HoldBurstForDowntime && !BurstJustReleased
+			&& BMRDowntimeWithin(AutomatonQueenPvE.EnoughLevel ? 14f : 11f);
+
+		// Burst: dump a high battery into the Wildfire window. Keeps 2-minute Queens aligned even after the
+		// battery step table below desyncs (deaths, phase transitions, downtime).
+		if (!queenIntoDowntime && Battery >= 90 && (HasWildfire || IsLastAction(false, WildfirePvE)))
+		{
+			if (AutomatonQueenPvE.EnoughLevel && AutomatonQueenPvE.CanUse(out act, skipTTKCheck: true))
+			{
+				return true;
+			}
+
+			if (!AutomatonQueenPvE.EnoughLevel && RookAutoturretPvE.CanUse(out act, skipTTKCheck: true))
+			{
+				return true;
+			}
+		}
+
 		// Only allow battery usage if the current transition matches the expected step
-		if (foundStepPair)
+		if (foundStepPair && !queenIntoDowntime)
 		{
 			if (AutomatonQueenPvE.EnoughLevel && AutomatonQueenPvE.CanUse(out act, skipTTKCheck: true))
 			{

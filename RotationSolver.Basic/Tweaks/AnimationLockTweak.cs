@@ -109,7 +109,7 @@ public sealed unsafe class AnimationLockTweak
 		// Log warning to chat
 		if (Service.Config.InDebug)
 		{
-			PluginLog.Debug($"[RSR] Unexpected animation lock detected! Disabling animation lock reduction feature.");
+			PluginLog.Debug($"[BRR] Unexpected animation lock detected! Disabling animation lock reduction feature.");
 		}
 
 		// Temporarily disable the tweak (but don't save the config, in case this condition is temporary)
