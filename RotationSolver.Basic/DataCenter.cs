@@ -356,14 +356,6 @@ internal static class DataCenter
 
 	private static readonly Lock _tankbusterLock = new();
 
-	/// <summary>
-	/// Only recorded 15s hps.
-	/// </summary>
-	public const int HP_RECORD_TIME = 240;
-
-	internal static Queue<(DateTime time, Dictionary<ulong, float> hpRatios)> RecordedHP { get; } =
-		new(HP_RECORD_TIME + 1);
-
 	public static ICustomRotation? CurrentRotation { get; internal set; }
 	public static DutyRotation? CurrentDutyRotation { get; internal set; }
 
@@ -692,8 +684,7 @@ internal static class DataCenter
 	private static long _avgTTKCacheTick = long.MinValue;
 	private const long AverageTtkTtlMs = 15;
 
-	// GetTTK() walks the RecordedHP history per hostile target, so this is cached for a
-	// single frame rather than recomputed on every CanUse()/condition check that reads it.
+	// Cached for a single frame rather than recomputed on every CanUse()/condition check that reads it.
 	public static float AverageTTK
 	{
 		get
@@ -1672,6 +1663,8 @@ internal static class DataCenter
 		LastAbility = 0;
 		_avgTTK = 0;
 		_avgTTKCacheTick = long.MinValue;
+		TimeToKillTracker.Clear();
+		DotTickTracker.Clear();
 		_partyHpStatsCacheTick = long.MinValue;
 		_timeLastActionUsed = DateTime.Now;
 		_actions.Clear();
