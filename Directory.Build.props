@@ -1,18 +1,16 @@
 <Project>
-    <PropertyGroup>
-		<TargetFramework>net10.0-windows</TargetFramework>
+	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Authors>Bunny</Authors>
 		<!-- Version for local builds; the publish workflow overrides it with the release tag. Keep it in step with the top changelog entry. -->
-		<Version>7.5.7.7</Version>
+		<Version>7.5.7.10</Version>
 		<PlatformTarget>x64</PlatformTarget>
-		<Platforms>AnyCPU</Platforms>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
-    </PropertyGroup>
-	
-    <ItemGroup>
+	</PropertyGroup>
+
+	<ItemGroup>
 		<Using Include="System.Numerics" />
 		<Using Include="System.Reflection" />
-    </ItemGroup>
+	</ItemGroup>
 </Project>

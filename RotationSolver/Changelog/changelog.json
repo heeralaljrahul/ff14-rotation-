@@ -1,6 +1,58 @@
 {
-  "tagline": "Upstream sync: better time to kill and tidier settings",
+  "tagline": "Upstream sync: targeting and settings fixes",
   "entries": [
+    {
+      "version": "7.5.7.10",
+      "title": "Targeting and status check fixes",
+      "date": "October 27, 2026",
+      "sections": [
+        {
+          "title": "BunnyRotationReborn",
+          "icon": "Heart",
+          "items": [
+            "Synced with the latest RotationSolverReborn (7.5.7.10): targeting and settings fixes, in-combat-only tinctures, faster target checks, and 0 GCD opener options for Summoner and the Beiruta Red Mage, Pictomancer and Ninja rotations. All Bunny features carry over.",
+            "Dancer and Viper keep their Bunny potion timing, now also limited to combat like upstream."
+          ]
+        },
+        {
+          "title": "Targeting",
+          "icon": "Crosshairs",
+          "items": [
+            "Actions with unique target behaviour now work correctly.",
+            "Fixed issue with \"switch target to friendly\" setting."
+          ]
+        },
+        {
+          "title": "Settings",
+          "icon": "SlidersH",
+          "items": [
+            "Fixed a rare bug where an unrelated game crash could cause settings to be wiped.",
+            "Removed the \"Presses per action\" setting. Button presses on hotbars now always play two or three times per action."
+          ]
+        },
+        {
+          "title": "Healing",
+          "icon": "Heartbeat",
+          "items": [
+            "oGCD heals triggered by commands execute properly."
+          ]
+        },
+        {
+          "title": "Rotations",
+          "icon": "Wrench",
+          "items": [
+            "WHM, VPR, and DNC tincures are now only used in combat."
+          ]
+        },
+        {
+          "title": "Performance",
+          "icon": "TachometerAlt",
+          "items": [
+            "Minor optimizations to performance in high object environments. Target checks are more efficient."
+          ]
+        }
+      ]
+    },
     {
       "version": "7.5.7.7",
       "title": "Time to kill accuracy",

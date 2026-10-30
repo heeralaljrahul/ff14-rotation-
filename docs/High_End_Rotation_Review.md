@@ -16,7 +16,7 @@ The gate also prevents automatic out-of-combat preparation before a countdown ha
 
 These checks prevent new plugin action submissions. They do not undo an action already accepted by the game, interrupt an existing cast, or disable auto-attacks a player previously enabled. Test countdown initiation while a native action is already queued separately. “Start at zero” means eligibility begins at zero, subject to framework updates and the game's own action restrictions.
 
-Files: `RotationSolver.Basic/Helpers/AutomaticPullGate.cs`, `RotationSolver.Basic/Service.cs`, `RotationSolver.Basic/Rotations/CustomRotation_Invoke.cs`, `RotationSolver/Commands/RSCommands_Actions.cs`.
+Files: `RotationSolver/Basic/Helpers/AutomaticPullGate.cs`, `RotationSolver/Basic/Service.cs`, `RotationSolver/Basic/Rotations/CustomRotation_Invoke.cs`, `RotationSolver/Commands/RSCommands_Actions.cs`.
 
 ### Manual input uses the original game handler
 
@@ -26,7 +26,7 @@ With `InterceptInstantUse` enabled (default), the detour now immediately forward
 
 This removes a plugin input delay. It does **not** prove that every rotation recovers correctly from every manual intervention. In particular, SGE's automatic Eukrasia intent can still conflict with a manual Eukrasia-to-shield sequence; see SGE below. Native failed presses are not converted into later presses.
 
-Files: `RotationSolver/Updaters/ActionQueueManager.cs`, `RotationSolver.Basic/Configuration/Configs.cs`.
+Files: `RotationSolver/Updaters/ActionQueueManager.cs`, `RotationSolver/Basic/Configuration/Configs.cs`.
 
 ### Burst controls remain optional
 

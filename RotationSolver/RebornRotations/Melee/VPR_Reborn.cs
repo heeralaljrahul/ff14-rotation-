@@ -265,7 +265,7 @@ public sealed class VPR_Reborn : ViperRotation
 		}
 
 		// Even-minute potion in the weave after the Ire filler GCD, ahead of Death Rattle so it is buffed too.
-		if (IsBurst && BurstMed && HasReadyToReawaken && !WaitingForIreFiller && SerpentOffering >= 50
+		if (IsBurst && InCombat && BurstMed && HasReadyToReawaken && !WaitingForIreFiller && SerpentOffering >= 50
 			&& UseBurstMedicine(out act))
 		{
 			return true;

@@ -41,10 +41,10 @@ The current cast, GCD, animation lock, MP, proc, target, range and other game re
 
 | File | Purpose |
 |---|---|
-| `RotationSolver.Basic/Helpers/ManualActionPriority.cs` | State policy, latest-request semantics, expiry, native-sequence confirmation and cast ownership. |
+| `RotationSolver/Basic/Helpers/ManualActionPriority.cs` | State policy, latest-request semantics, expiry, native-sequence confirmation and cast ownership. |
 | `RotationSolver/Updaters/ActionQueueManager_ManualPriority.cs` | Native request preservation, timing validation/retries and queue ownership. |
 | `RotationSolver/Updaters/ActionQueueManager.cs` | Distinguish solver submissions, actual button presses, nested native calls and native queue replay. |
-| `RotationSolver.Basic/Helpers/ActionManagerEx.cs` | Notify when the native request sequence actually advances. |
+| `RotationSolver/Basic/Helpers/ActionManagerEx.cs` | Notify when the native request sequence actually advances. |
 | `RotationSolver/Updaters/ActionUpdater.cs` | Yield at scheduling, protect native queues/ground targeting and reset on death. |
 | `RotationSolver/Commands/RSCommands_Actions.cs` | Recheck ownership before switching targets or submitting the selected action. |
 | `RotationSolver/Updaters/CancelCastUpdater.cs` | Leave a manual cast's completion/cancellation to the player and game. |

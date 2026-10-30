@@ -206,7 +206,7 @@ public sealed class DNC_Reborn : DancerRotation
 		}
 
 		// Use burst medicine if cooldown for Technical Step has elapsed sufficiently
-		if (TechnicalStepPvE.Cooldown.ElapsedAfter(115)
+		if (InCombat && TechnicalStepPvE.Cooldown.ElapsedAfter(115)
 			&& (!IsInUltimate || Ultimate.OpenerPotion || CombatTime > 30)
 			&& !HoldTwoMinuteBurst
 			&& UseBurstMedicine(out act))
